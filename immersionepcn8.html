@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mon magasin – Niveau 8 – CAP EPC – Isabelle LÉGER</title>
+<meta name="author" content="Isabelle LÉGER">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  const NOM_ENSEIGNANTE = "Isabelle LÉGER";   // nom fixe
+  const CODE_PAR_DEFAUT = "EPC2026";         // code fixe de l'espace enseignante
+</script>
+<style>
+:root{
+  --teal:#0E5C63; --teal-d:#083E43; --yellow:#FFD43B; --yellow-d:#E8B800;
+  --tomato:#E5483B; --mint:#D9F2E6; --green:#1F8A4C; --bg:#EAF2F3; --ink:#17262A; --white:#fff; --line:#9BB8BB;
+  --title:"Fredoka","Trebuchet MS",Verdana,sans-serif;
+  --body:"Atkinson Hyperlegible",Verdana,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:20px;line-height:1.5}
+button{font-family:inherit;font-size:inherit;cursor:pointer;color:var(--ink)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:4px solid var(--yellow-d);outline-offset:3px}
+h1,h2,h3{font-family:var(--title);line-height:1.15;margin:0 0 .4em}
+h1{font-size:2rem} h2{font-size:1.65rem} h3{font-size:1.25rem}
+.wrap{max-width:1000px;margin:0 auto;padding:0 18px 40px}
+
+.store-sign{background:var(--teal);color:var(--white);border-bottom:10px solid var(--yellow)}
+.store-sign .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:14px;padding-bottom:14px;flex-wrap:wrap}
+.store-sign h1{margin:0}
+.store-sign .who{font-size:1rem}
+.awning{height:22px;background:repeating-linear-gradient(90deg,var(--tomato) 0 40px,var(--white) 40px 80px);border-radius:0 0 18px 18px;margin:0 6px}
+
+.btn{border:none;border-radius:14px;padding:14px 22px;font-weight:700;background:var(--teal);color:var(--white);min-height:56px}
+.btn:hover{background:var(--teal-d)}
+.btn.yellow{background:var(--yellow);color:var(--ink)} .btn.yellow:hover{background:var(--yellow-d)}
+.btn.ghost{background:var(--white);color:var(--teal);border:3px solid var(--teal)}
+.btn.small{min-height:44px;padding:8px 14px;font-size:.9rem}
+.speak{border:none;background:var(--yellow);border-radius:50%;width:50px;height:50px;font-size:1.4rem;flex:none}
+.speak:hover{background:var(--yellow-d)}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.panel{background:var(--white);border-radius:20px;padding:24px;margin-top:22px}
+.consigne{display:flex;gap:14px;align-items:flex-start;background:var(--mint);border-radius:16px;padding:16px;margin-bottom:18px}
+.consigne p{margin:0}
+.saved{position:fixed;bottom:16px;right:16px;background:var(--green);color:#fff;padding:10px 18px;border-radius:30px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none}
+.saved.on{opacity:1}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 20px;border-radius:12px;z-index:9;max-width:90%}
+
+.profiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:18px}
+.profile{background:var(--white);border:4px solid var(--teal);border-radius:20px;padding:22px;text-align:center}
+.profile .big{font-size:3rem}
+.profile input{width:100%;font:inherit;padding:12px;border-radius:12px;border:3px solid var(--line);margin:10px 0;text-align:center}
+
+/* Plan du magasin */
+.home-grid{display:grid;grid-template-columns:1fr 290px;gap:22px;margin-top:22px;align-items:start}
+@media (max-width:860px){.home-grid{grid-template-columns:1fr}}
+.zone{background:var(--white);border-radius:20px;padding:20px;margin-bottom:20px;border-left:12px solid var(--zc,var(--teal))}
+.zone h3{margin-bottom:2px} .zone .zd{margin:0 0 12px;color:#3E5559;font-size:1rem}
+.aisles{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:12px}
+.aisle{position:relative;background:var(--bg);border:none;border-radius:16px;padding:0 0 12px;text-align:left;overflow:hidden;border-bottom:7px solid #C9D7D9}
+.aisle:hover{background:#DCEBEC}
+.aisle .ico{font-size:2.3rem;padding:8px 12px 0}
+.aisle .lbl{padding:0 12px;font-weight:700;line-height:1.2}
+.aisle .st{padding:2px 12px 0;font-size:.85rem;color:#3E5559}
+.aisle.done{border-bottom-color:var(--green)}
+.aisle.done::after{content:"✔";position:absolute;top:10px;right:10px;background:var(--green);color:#fff;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.9rem}
+
+.card{background:linear-gradient(135deg,var(--teal),#147A82);color:#fff;border-radius:22px;padding:20px;position:sticky;top:12px}
+.stamps{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:14px 0}
+.stamp{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(255,255,255,.6);display:grid;place-items:center;font-size:1.1rem}
+.stamp.on{background:var(--yellow);border:2px solid var(--yellow);transform:rotate(-12deg)}
+.card .count{font-family:var(--title);font-size:1.4rem}
+.mybadge{background:var(--white);color:var(--ink);border-radius:14px;padding:10px;text-align:center;margin-top:10px;border-top:14px solid var(--bc,var(--tomato))}
+
+/* Quiz */
+.question{font-size:1.25rem;font-weight:700;margin-bottom:14px}
+.opts{display:grid;gap:12px}
+.opt{text-align:left;background:var(--white);border:3px solid var(--line);border-radius:14px;padding:14px 18px;min-height:60px}
+.opt:hover{border-color:var(--teal)}
+.opt.good{background:#D7F5E2;border-color:var(--green)}
+.opt.bad{background:#FBDAD6;border-color:var(--tomato)}
+.feedback{margin-top:14px;padding:14px;border-radius:14px;font-weight:700}
+.feedback.good{background:#D7F5E2} .feedback.bad{background:#FBDAD6} .feedback.info{background:#FFF4C4}
+.progress{height:14px;background:#D5E3E5;border-radius:10px;overflow:hidden;margin-bottom:18px}
+.progress div{height:100%;background:var(--yellow-d)}
+.bigcard{background:var(--bg);border-radius:20px;padding:26px;text-align:center;font-size:1.5rem;font-weight:700;margin-bottom:16px}
+.bigcard .e{font-size:3.5rem;display:block}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.two .btn{font-size:1.15rem;min-height:72px}
+
+.missions{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.mission{background:var(--bg);border-radius:18px;padding:18px}
+.mission .ico{font-size:2.6rem}
+
+table.bl{width:100%;border-collapse:collapse;font-size:1.05rem}
+table.bl th{background:var(--teal);color:#fff;padding:10px;text-align:left}
+table.bl td{padding:0;border-bottom:2px solid #D5E3E5}
+table.bl td button{width:100%;text-align:left;background:none;border:none;padding:14px 10px;min-height:56px}
+table.bl tr.found td{background:#FBDAD6}
+table.bl tr.ok td{background:#E8F0F1}
+.tablebox{overflow-x:auto}
+
+.products{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.prod{background:var(--white);border:3px solid var(--line);border-radius:14px;padding:10px 14px;font-size:1.05rem;min-height:56px}
+.prod .e{font-size:1.6rem;margin-right:6px;vertical-align:middle}
+.prod.sel,.sel:not(.pcol){border-color:var(--yellow-d)!important;background:#FFF4C4!important;box-shadow:0 0 0 4px var(--yellow)}
+.shelves{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
+.shelf{background:var(--bg);border:none;border-radius:16px;padding:0 0 12px;min-height:150px;text-align:left;border-bottom:10px solid #8A6A4B}
+.shelf .sign{background:var(--teal);color:#fff;font-family:var(--title);padding:8px 12px;border-radius:16px 16px 0 0}
+.shelf .in{padding:8px 12px;font-size:1.7rem}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+
+.today{display:inline-block;background:var(--tomato);color:#fff;padding:6px 14px;border-radius:10px;font-weight:700}
+.yogs{display:flex;gap:14px;flex-wrap:wrap;margin:16px 0}
+.yog{background:var(--white);border:3px solid var(--line);border-radius:16px;padding:12px;width:150px;text-align:center}
+.yog .e{font-size:2.4rem}
+.yog .dlc{display:block;background:var(--ink);color:#fff;border-radius:8px;padding:4px;font-size:.95rem;margin-top:6px}
+.yog:disabled{opacity:.35;cursor:default}
+.slots{display:flex;gap:10px;flex-wrap:wrap}
+.slot{width:150px;min-height:110px;border:3px dashed var(--line);border-radius:16px;display:grid;place-items:center;text-align:center;padding:6px;background:var(--white)}
+.slot.fill{border-style:solid;border-color:var(--green);background:#D7F5E2}
+
+.ticket{background:#fff;border:2px dashed var(--line);border-radius:6px;padding:16px;max-width:360px;font-family:"Courier New",monospace}
+.ticket .tot{font-size:1.4rem;font-weight:700;border-top:2px dashed var(--line);margin-top:8px;padding-top:8px}
+.money{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.bill{border:none;border-radius:8px;width:110px;height:62px;font-weight:700;font-size:1.2rem}
+.coin{border:none;border-radius:50%;width:70px;height:70px;font-weight:700;font-size:1rem}
+.c-gold{background:radial-gradient(circle at 35% 35%,#FCE79A,#D9B13B)}
+.c-copper{background:radial-gradient(circle at 35% 35%,#F2C29B,#B8743F)}
+.c-bi{background:radial-gradient(circle,#E4C35A 0 45%,#C9CDD1 46%)}
+.b5{background:#C9CDD1} .b10{background:#F0B6A8}
+.tray{background:var(--mint);border-radius:16px;padding:14px;min-height:70px}
+.tray .sum{font-family:var(--title);font-size:1.5rem}
+
+.smileys{display:flex;gap:12px;flex-wrap:wrap}
+.smiley{font-size:2.4rem;background:var(--white);border:3px solid var(--line);border-radius:16px;width:80px;height:80px}
+.chip{background:var(--white);border:3px solid var(--line);border-radius:30px;padding:10px 18px;min-height:52px}
+textarea{width:100%;min-height:110px;font:inherit;padding:12px;border-radius:12px;border:3px solid var(--line)}
+
+/* Tenue */
+.dress{display:grid;grid-template-columns:220px 1fr;gap:20px}
+@media (max-width:700px){.dress{grid-template-columns:1fr}}
+.mannequin{background:var(--bg);border-radius:20px;padding:16px;text-align:center;font-size:2.6rem;line-height:1.25}
+.mannequin small{display:block;font-size:.85rem;color:#3E5559}
+
+/* Jeux de mots */
+.word{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:16px 0}
+.word span{width:46px;height:58px;border-bottom:5px solid var(--teal);font-family:var(--title);font-size:2rem;display:grid;place-items:center;background:var(--bg);border-radius:8px 8px 0 0}
+.keys{display:grid;grid-template-columns:repeat(auto-fill,minmax(48px,1fr));gap:6px}
+.key{height:52px;border:2px solid var(--line);background:var(--white);border-radius:10px;font-weight:700;font-size:1.2rem}
+.key:disabled{opacity:.3}
+.key.g{background:#D7F5E2;opacity:1;border-color:var(--green)}
+.basket{font-size:2rem;text-align:center;background:var(--mint);border-radius:16px;padding:8px}
+.letters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.letter{width:58px;height:62px;border:3px solid var(--line);background:#FFF4C4;border-radius:12px;font-family:var(--title);font-size:1.8rem}
+.letter:disabled{opacity:.25}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;margin:0 auto}
+@media (max-width:500px){.mem{grid-template-columns:repeat(3,1fr)}}
+.mcard{aspect-ratio:1;border:none;border-radius:14px;background:var(--teal);color:#fff;font-size:1.05rem;font-weight:700;padding:6px}
+.mcard.open{background:#FFF4C4;color:var(--ink)} .mcard.open .e{font-size:2.4rem}
+.mcard.done{background:#D7F5E2;color:var(--ink)}
+.ws{display:grid;gap:3px;max-width:520px;margin:0 auto;user-select:none}
+.ws button{aspect-ratio:1;border:1px solid #C9D7D9;background:var(--white);border-radius:6px;font-family:var(--title);font-size:clamp(.85rem,3.2vw,1.35rem);padding:0}
+.ws button.start{background:var(--yellow)}
+.ws button.f{background:#B9E8CB}
+.wl{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;justify-content:center}
+.wl span{background:var(--bg);padding:6px 12px;border-radius:20px;font-weight:700}
+.wl span.f{text-decoration:line-through;background:#D7F5E2}
+
+/* Erreurs du rayon */
+.gond{background:#8A6A4B;border-radius:16px;padding:10px;max-width:640px;margin:0 auto}
+.etage{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;background:#F3EDE4;padding:8px;border-bottom:8px solid #6B4F36;margin-bottom:8px}
+.etage button,.floor button{border:none;background:none;font-size:2rem;padding:4px;min-height:64px;border-radius:10px}
+.etage button small,.floor button small{display:block;font-size:.7rem;background:var(--yellow);border-radius:4px;font-weight:700}
+.etage button.hit,.floor button.hit{background:#FBDAD6;outline:3px solid var(--tomato)}
+.floor{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;padding:4px 8px}
+
+/* Coloriage */
+.palette{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.pcol{width:48px;height:48px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 2px var(--line)}
+.pcol.sel{box-shadow:0 0 0 5px var(--ink)}
+.colorbox{max-width:620px;margin:0 auto}
+.colorbox svg{width:100%;height:auto;background:#fff;border-radius:12px;border:3px solid var(--line)}
+.colorbox svg [data-r]{cursor:pointer}
+.svgline{pointer-events:none}
+
+.result{text-align:center}
+.result .stars{font-size:3.4rem;letter-spacing:.1em}
+.burst{position:fixed;pointer-events:none;font-size:2rem;animation:fly 1.4s ease-out forwards;z-index:10}
+@keyframes fly{to{transform:translate(var(--dx),var(--dy)) rotate(260deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){.shake,.burst{animation:none}}
+
+.tch table{width:100%;border-collapse:collapse;font-size:.95rem}
+.tch th,.tch td{border:1px solid #C9D7D9;padding:8px;text-align:left;vertical-align:top}
+.tch th{background:var(--teal);color:#fff}
+.tch tr.z td{background:var(--bg);font-weight:700}
+.tch details{margin-top:6px} .tch summary{cursor:pointer;color:var(--teal);font-weight:700}
+.tch input{font:inherit;padding:10px;border-radius:10px;border:3px solid var(--line)}
+.tch svg{width:160px;height:auto;border:1px solid #C9D7D9}
+#tlayer{position:fixed;inset:0;background:rgba(23,38,42,.65);z-index:20;overflow:auto;padding:20px}
+#tlayer .panel{max-width:1050px;margin:0 auto 20px}
+.stu{border:3px solid var(--line);background:var(--white);border-radius:12px;padding:8px 14px;font-weight:700}
+.stu.sel{border-color:var(--teal)!important;background:var(--mint)!important;box-shadow:none}
+.live{background:#FFF4C4;border-radius:8px;padding:4px 8px;display:inline-block;margin-top:4px}
+.etage button.back{opacity:.28;transform:scale(.6)}
+.etq{display:inline-block;background:#fff;border:3px solid var(--ink);border-radius:10px;padding:12px 18px;min-width:250px;margin-bottom:14px;text-align:left}
+.etq .nm{font-weight:700;font-size:1.1rem} .etq .px{font-family:var(--title);font-size:2.4rem;color:var(--tomato);line-height:1.1}
+.etq .old{text-decoration:line-through;color:#5B6C70;font-size:1.2rem} .etq .pu{font-size:.95rem} .etq .bc{letter-spacing:1px;font-size:.8rem;margin-top:6px}
+.balis{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.bcard{background:#fff;border:3px solid var(--line);border-radius:14px;padding:10px;font-size:2.6rem;text-align:center}
+.bcard .mini{font-size:.9rem;background:#FFF4C4;border-radius:6px;padding:4px;margin-top:6px;min-height:46px}
+.bcard .mini.none{background:#eee;color:#5B6C70}
+.bcard.hit{border-color:var(--tomato);background:#FBDAD6}
+.cnt{display:grid;grid-template-columns:repeat(5,64px);gap:8px}
+.cnt button{font-size:2.1rem;height:64px;border:2px solid var(--line);background:#fff;border-radius:12px;position:relative;padding:0}
+.cnt button.c{background:#D7F5E2;border-color:var(--green)}
+.cnt button.c::after{content:"✔";position:absolute;top:-8px;right:-8px;background:var(--green);color:#fff;border-radius:50%;width:24px;height:24px;font-size:.8rem;display:grid;place-items:center}
+.rs{display:grid;grid-template-columns:repeat(5,60px);gap:8px}
+.rs div{height:60px;border-radius:10px;display:grid;place-items:center;font-size:2rem;background:#fff;border:2px solid var(--line)}
+.rs div.vide{border:3px dashed var(--tomato);background:var(--bg)}
+.b20{background:#9EC9E8}
+.poster{width:260px;aspect-ratio:3/4;border-radius:16px;padding:18px 12px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;text-align:center;font-family:var(--title);font-size:20px;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+.poster.sm{width:130px;font-size:10px;padding:9px 6px}
+.poster .pt{font-size:1.9em;font-weight:700;line-height:1.1} .poster .pe{font-size:4.5em;line-height:1} .poster .pn{font-size:1.3em}
+.poster .pp{font-size:2.3em;font-weight:700;background:#fff;color:var(--tomato);border-radius:12px;padding:0 .4em}
+.chat{display:flex;flex-direction:column;gap:10px}
+.bub{max-width:85%;padding:12px 14px;border-radius:18px;font-size:1.05rem}
+.bub .speak{width:38px;height:38px;font-size:1rem;vertical-align:middle;margin-left:6px}
+.bub.c{background:var(--bg);align-self:flex-start;border-bottom-left-radius:4px}
+.bub.m{background:#D7F5E2;align-self:flex-end;border-bottom-right-radius:4px}
+.bub.n{align-self:center;background:#FFF4C4;font-style:italic;max-width:100%}
+.bub .who{display:block;font-size:.85rem;font-weight:700;color:#3E5559}
+.plan{border-collapse:collapse;margin-bottom:14px;font-size:1.05rem}
+.plan th{background:var(--teal);color:#fff;padding:6px 12px}.plan td{border:2px solid #D5E3E5;padding:6px 12px}
+.plan tr.off td,.plan td.r{background:#FFF4C4}
+.bki{display:inline-flex;align-items:center;gap:6px;background:#fff;border-radius:10px;padding:4px 8px;margin:4px}
+.okl{color:var(--green);font-weight:700}
+.flat{display:flex;flex-wrap:wrap;gap:6px;font-size:2rem;max-width:560px}
+.ctn{border:3px dashed #8A6A4B;border-radius:10px;padding:4px 8px;font-size:1.5rem;background:#F3EDE4}
+.fiche{display:flex;gap:16px;align-items:flex-start;background:#fff;border:4px solid var(--fc,var(--teal));border-radius:16px;padding:16px;max-width:540px}
+.fiche .fa{font-size:4rem;line-height:1}.fiche .fn{font-family:var(--title);font-size:1.6rem}
+.fiche.sm{font-size:.8rem;padding:8px;gap:8px}.fiche.sm .fa{font-size:2rem}.fiche.sm .fn{font-size:1rem}
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#C9D7D9;padding:10px;border-radius:16px;max-width:720px}
+.zbtn{background:#fff;border:3px solid var(--line);border-radius:12px;min-height:86px;font-size:.9rem;font-weight:700;padding:6px;line-height:1.2}
+.zbtn .e{display:block;font-size:2rem}
+.zbtn.good{background:#D7F5E2;border-color:var(--green)}.zbtn.bad{background:#FBDAD6;border-color:var(--tomato)}
+.tline{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;max-width:680px}
+.tline div{height:56px;border-radius:6px;background:#E8F0F1;display:flex;align-items:flex-end;justify-content:center;font-size:.72rem;padding-bottom:3px}
+.tline div.w{background:var(--yellow);border:2px solid var(--yellow-d)}
+.ticket{max-width:470px}
+.msgcard{background:#fff;border:3px dashed var(--line);border-radius:12px;padding:16px;margin-top:16px}
+.mag{max-width:460px;background:#fff;border:4px solid var(--mc);border-radius:16px;overflow:hidden;text-align:center;padding-bottom:14px}
+.mag .aw{height:34px;background:repeating-linear-gradient(90deg,var(--mc) 0 34px,#fff 34px 68px)}
+.mag .mn{font-family:var(--title);font-size:1.9rem;background:var(--mc);color:#fff;margin:12px 16px 6px;border-radius:10px;padding:6px}
+.mag .mt{font-weight:700}.mag .ms{font-style:italic;margin:6px}
+.mag .mr span{display:inline-block;background:var(--bg);border-radius:20px;padding:4px 10px;margin:3px;font-size:.9rem}
+.mag.sm{max-width:220px;font-size:.75rem;padding-bottom:6px}.mag.sm .mn{font-size:1rem;margin:6px}.mag.sm .aw{height:14px}.mag.sm .mr span{font-size:.7rem}
+.cv{max-width:520px;background:#fff;border:2px solid #C9D7D9;border-radius:12px;overflow:hidden;box-shadow:0 4px 0 rgba(0,0,0,.08);text-align:left}
+.cv .ch{background:var(--cc);color:#fff;padding:14px;display:flex;gap:12px;align-items:center}
+.cv .ce{font-size:3rem;line-height:1}.cv .cn{font-family:var(--title);font-size:1.6rem}
+.cv .cb{padding:10px 16px 14px}.cv h4{margin:10px 0 4px;color:var(--cc);font-family:var(--title);font-size:1.05rem}
+.cv ul{margin:0;padding-left:20px}
+.cv.sm{max-width:240px;font-size:.7rem}.cv.sm .ce{font-size:1.6rem}.cv.sm .cn{font-size:1rem}.cv.sm .ch{padding:6px}.cv.sm .cb{padding:4px 8px}.cv.sm h4{font-size:.8rem;margin:4px 0 2px}
+.poste{background:var(--mint);border-radius:16px;padding:18px;text-align:center;margin-top:16px}
+.poste .pe{font-size:3.5rem}.poste .pn{font-family:var(--title);font-size:1.6rem}
+.map{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;background:#C9D7D9;padding:10px;border-radius:16px;max-width:720px}
+.lvl{display:grid;gap:6px;max-width:560px;background:#8A6A4B;padding:8px;border-radius:12px}
+.zbtn{background:#fff;border:3px solid var(--line);border-radius:12px;min-height:72px;font-size:1rem;font-weight:700;padding:6px;line-height:1.2}
+.lvl .zbtn{background:#F3EDE4;border-color:#F3EDE4;text-align:left;padding-left:16px}
+.zbtn .e{display:inline-block;font-size:1.8rem;margin-right:10px;vertical-align:middle}
+.zbtn.good{background:#D7F5E2!important;border-color:var(--green)!important}.zbtn.bad{background:#FBDAD6!important;border-color:var(--tomato)!important}
+.postit{background:#FFF59D;padding:18px 20px;max-width:380px;transform:rotate(-1.5deg);box-shadow:0 6px 12px rgba(0,0,0,.15);font-size:1.1rem;margin:16px auto;line-height:1.6}
+.vit{max-width:480px;border:12px solid #5B4636;border-radius:10px;background:var(--vc);color:#fff;text-align:center;padding:14px}
+.vit .vt{font-family:var(--title);font-size:1.8rem}.vit .vd{font-size:2rem;letter-spacing:.25em;margin:4px 0}
+.vit .vp{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;background:rgba(255,255,255,.92);color:var(--ink);border-radius:8px;padding:10px;margin:10px 0}
+.vit .vp span{font-size:2.2rem;display:flex;flex-direction:column;align-items:center;line-height:1.1}.vit .vp small{font-size:.75rem}
+.vit .vs{background:#fff;color:var(--ink);display:inline-block;border-radius:20px;padding:4px 14px;font-weight:700}
+.vit.sm{max-width:230px;border-width:6px;font-size:.7rem;padding:6px}.vit.sm .vt{font-size:1rem}.vit.sm .vd{font-size:1rem}.vit.sm .vp span{font-size:1.2rem}.vit.sm .vp small{font-size:.55rem}
+.scale{display:inline-flex;flex-direction:column;align-items:center;background:#C9D7D9;border-radius:14px;padding:12px 22px;margin-bottom:12px}
+.scale .sd{background:#17262A;color:#7CFC9A;font-family:"Courier New",monospace;font-size:1.8rem;padding:4px 14px;border-radius:6px}
+.scale .sp{font-size:2.6rem;background:#fff;border-radius:40px;padding:2px 30px;margin-top:8px}
+.micro{background:#17262A;color:#fff;border-radius:16px;padding:16px 18px;max-width:520px;margin:16px auto;font-size:1.1rem;line-height:1.6}
+.sac{width:240px;margin:44px auto 0;position:relative;background:var(--sc);color:#fff;border-radius:8px 8px 20px 20px;padding:24px 14px 20px;text-align:center;min-height:220px}
+.sac::before{content:"";position:absolute;top:-40px;left:60px;width:100px;height:50px;border:10px solid var(--sc);border-bottom:none;border-radius:60px 60px 0 0}
+.sac .smo{font-size:3rem;letter-spacing:.1em;line-height:1.2}.sac .ss{font-family:var(--title);font-size:1.4rem;margin-top:10px}.sac .sn{font-size:.85rem;margin-top:14px;opacity:.9}
+.sac.mini{width:130px;min-height:110px;padding:12px 8px 10px;margin:26px 0 0}.sac.mini::before{top:-24px;left:32px;width:50px;height:28px;border-width:6px}
+.sac.mini .smo{font-size:1.4rem}.sac.mini .ss{font-size:.8rem}.sac.mini .sn{font-size:.6rem}
+.mail{background:#fff;border:2px solid #C9D7D9;border-radius:12px;padding:14px 18px;max-width:560px;margin:16px auto;line-height:1.5;text-align:left}
+.mail hr{border:none;border-top:1px solid #C9D7D9}
+.label{background:#fff;border:3px solid var(--ink);border-radius:8px;padding:14px 18px;max-width:340px;margin:16px auto;font-size:1.2rem;line-height:1.6;font-family:"Courier New",monospace}
+.revs{display:grid;gap:10px;margin-bottom:12px;max-width:560px}.rev{background:#fff;border:2px solid #C9D7D9;border-radius:12px;padding:10px 14px}
+.rev .stars{color:#E8B800;font-size:1.2rem;letter-spacing:.1em}
+.web{max-width:300px;background:#fff;border:2px solid #C9D7D9;border-radius:14px;overflow:hidden;text-align:left;box-shadow:0 4px 0 rgba(0,0,0,.08)}
+.web .wi{background:var(--wc);font-size:5rem;text-align:center;padding:16px;position:relative}
+.web .wb{position:absolute;top:10px;left:10px;background:var(--tomato);color:#fff;font-size:.8rem;font-weight:700;border-radius:20px;padding:3px 10px}
+.web .wt{padding:10px 14px}.web .wn{font-family:var(--title);font-size:1.3rem}.web .wst{color:#E8B800}
+.web .wp{font-family:var(--title);font-size:1.6rem;color:var(--tomato)}.web .wd{font-size:.9rem;color:#3E5559}
+.web .wbtn{margin:0 14px 14px;background:var(--teal);color:#fff;border-radius:10px;text-align:center;padding:8px;font-weight:700}
+.web.sm{max-width:170px;font-size:.7rem}.web.sm .wi{font-size:2.6rem;padding:8px}.web.sm .wn{font-size:.9rem}.web.sm .wp{font-size:1rem}.web.sm .wbtn{padding:4px;margin:0 8px 8px}.web.sm .wb{font-size:.55rem;top:4px;left:4px}
+footer{text-align:center;font-size:.9rem;color:#3E5559;padding:20px}
+@media print{.store-sign,.awning,footer,.noprint{display:none}.panel{padding:0}body.tl main{display:none}body.tl #tlayer{position:static;background:none;padding:0}}
+</style>
+</head>
+<body>
+<header class="store-sign">
+  <div class="wrap">
+    <h1>🛒 Mon magasin EPC <span style="background:var(--yellow);color:var(--ink);border-radius:10px;padding:2px 10px;font-size:1.1rem;vertical-align:middle">Niveau 8</span></h1>
+    <div class="row"><div class="who" id="who"></div><button class="btn yellow small" id="mute" onclick="toggleMute()" aria-pressed="false">🔊 Son activé</button><button class="btn ghost small" onclick="openTeacher()">🔒 Espace enseignante</button></div>
+  </div>
+</header>
+<div class="wrap"><div class="awning" aria-hidden="true"></div></div>
+<main class="wrap" id="app"></main>
+<footer id="foot"></footer>
+<div class="saved" id="saved" role="status">Enregistré ✔</div>
+<div id="tlayer" hidden></div>
+
+<script>
+const KEY = "epc_immersion_niveau8";
+let state = load();
+let cur = null;
+const app = document.getElementById("app");
+
+/* ================= Sauvegarde ================= */
+function newStudent(name){ return {name:name||"",results:{},avis:null,badge:null,colors:{},progress:{}}; }
+function blank(){ return {teacher:NOM_ENSEIGNANTE, code:CODE_PAR_DEFAUT, students:{}}; }
+function load(){
+  try{ const s = JSON.parse(localStorage.getItem(KEY));
+    if(s && s.students){ const out={}; for(const [k,v] of Object.entries(s.students)) if(v && v.name) out[k]=Object.assign(newStudent(), v); s.students=out;
+      if(!s.teacher) s.teacher = NOM_ENSEIGNANTE; return s; } }catch(e){}
+  return blank();
+}
+function save(show=true){
+  try{ localStorage.setItem(KEY, JSON.stringify(state));
+    if(show){ const el=document.getElementById("saved"); el.classList.add("on"); setTimeout(()=>el.classList.remove("on"),1500); }
+  }catch(e){ alert("Attention : l'enregistrement n'a pas fonctionné sur cet ordinateur."); }
+}
+const esc = t => String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function shuffle(a){ a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+const pickN = (a,n) => shuffle(a).slice(0,n);
+function teacherLabel(){ return "Proposé par " + esc(NOM_ENSEIGNANTE); }
+function refreshHeader(){
+  document.getElementById("who").innerHTML = teacherLabel() + (cur ? " &nbsp;|&nbsp; Élève : <b>" + esc(state.students[cur].name) + "</b>" : "");
+  document.getElementById("foot").innerHTML = "Niveau 8 – Découverte du CAP Équipier polyvalent du commerce – " + teacherLabel();
+}
+let curAct=null;
+function live(details){ if(!cur||!curAct||!state.students[cur]) return;
+  state.students[cur].progress[curAct]={details:[...details], date:new Date().toLocaleString("fr-FR")}; save(false); }
+function track(arr){ arr.push=function(...a){ const r=Array.prototype.push.apply(this,a); live(this); return r; }; return arr; }
+const norm = t => String(t).trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+function toast(t){ const d=document.createElement("div"); d.className="toast"; d.textContent=t; document.body.appendChild(d); setTimeout(()=>d.remove(),5000); }
+
+/* ================= Lecture à voix haute =================
+   Correction : le texte est rangé dans data-say (plus de bug avec les apostrophes). */
+let voiceWarned=false;
+function speak(t){
+  if(state.mute) return;
+  if(!("speechSynthesis" in window)){ if(!voiceWarned){ toast("La lecture à voix haute n'est pas disponible dans ce navigateur."); voiceWarned=true; } return; }
+  const clean = String(t).replace(/\p{Extended_Pictographic}|\uFE0F|\u200D/gu,"").replace(/_+/g," ");
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(clean); u.lang="fr-FR"; u.rate=.9;
+  const v = speechSynthesis.getVoices().find(v=>v.lang && v.lang.toLowerCase().startsWith("fr"));
+  if(v) u.voice=v;
+  else if(!voiceWarned && speechSynthesis.getVoices().length){ toast("Aucune voix française n'est installée sur cet ordinateur."); voiceWarned=true; }
+  speechSynthesis.speak(u);
+}
+if("speechSynthesis" in window) speechSynthesis.getVoices();
+document.addEventListener("click", e=>{ const b=e.target.closest("[data-say]"); if(!b) return;
+  if(state.mute && b.classList.contains("speak")) toast("Le son est coupé. Clique sur « 🔇 Son coupé » en haut pour le remettre.");
+  speak(b.dataset.say); });
+function drawMute(){ const b=document.getElementById("mute"); if(!b) return;
+  b.textContent = state.mute ? "🔇 Son coupé" : "🔊 Son activé";
+  b.className = "btn small " + (state.mute ? "ghost" : "yellow");
+  b.setAttribute("aria-pressed", state.mute ? "true" : "false"); }
+function toggleMute(){
+  state.mute = !state.mute;
+  if(state.mute && "speechSynthesis" in window) speechSynthesis.cancel();
+  save(false); drawMute();
+  if(!state.mute) speak("Le son est activé.");
+}
+const sayBtn = t => `<button class="speak" data-say="${esc(t)}" aria-label="Écouter">🔊</button>`;
+const consigne = t => `<div class="consigne">${sayBtn(t)}<p>${t}</p></div>`;
+
+/* ================= Vocabulaire niveau 8 ================= */
+const VOCAB = [
+  {w:"COLIS",d:"Colis",e:"📦",def:"Un paquet que l'on envoie ou que l'on reçoit."},
+  {w:"ADRESSE",d:"Adresse",e:"🏠",def:"Le nom, la rue, le code postal et la ville où habite une personne."},
+  {w:"NUMERIQUE",d:"Numérique",e:"💻",def:"Tout ce qui marche avec un ordinateur, une tablette ou un téléphone."},
+  {w:"TABLETTE",d:"Tablette",e:"📱",def:"Un petit ordinateur plat, avec un écran que l'on touche."},
+  {w:"APPLICATION",d:"Application",e:"📲",def:"Un programme sur le téléphone, par exemple celui du magasin."},
+  {w:"ECRAN",d:"Écran",e:"🖥️",def:"La partie de l'ordinateur ou de la tablette où l'on voit les images."},
+  {w:"DOUCHETTE",d:"Douchette",e:"📟",def:"Le petit scanner que l'on tient à la main pour lire les codes-barres."},
+  {w:"EXPEDITION",d:"Expédition",e:"🚚",def:"L'envoi d'un colis à un client."},
+  {w:"DESTINATAIRE",d:"Destinataire",e:"📬",def:"La personne qui va recevoir le colis ou le message."},
+  {w:"CONFIDENTIEL",d:"Confidentiel",e:"🤫",def:"Une information secrète, que l'on ne doit pas donner aux autres."},
+  {w:"SECRET",d:"Secret",e:"🔒",def:"Ce que l'on garde pour soi, comme un mot de passe."},
+  {w:"AVIS",d:"Avis",e:"⭐",def:"Ce que le client pense du magasin, parfois avec des étoiles."},
+  {w:"RETOUR",d:"Retour",e:"↩️",def:"Quand le client rapporte un produit au magasin."},
+  {w:"SUIVI",d:"Suivi",e:"🔎",def:"Savoir où se trouve un colis pendant le voyage."},
+  {w:"COURRIEL",d:"Courriel",e:"📧",def:"Un message envoyé par internet. On dit aussi « mail »."},
+  {w:"SITE",d:"Site",e:"🌐",def:"Les pages internet du magasin, où l'on peut voir et commander les produits."},
+];
+
+/* ================= Activités ================= */
+const ZONES = [
+  {id:"z1", t:"Zone 1 – Le magasin connecté", d:"Les outils numériques, les informations secrètes, le suivi d'une commande, le courriel.", c:"#E5483B"},
+  {id:"z2", t:"Zone 2 – Les mots du pro (niveau 8)", d:"Les mots du numérique et des colis.", c:"#E8B800"},
+  {id:"z3", t:"Zone 3 – Les missions niveau 8", d:"Colis, adresse, commande en ligne, avis des clients, retour de produit…", c:"#0E5C63"},
+  {id:"z4", t:"Zone 4 – La pause créative", d:"Coloriages et ma fiche produit pour le site internet.", c:"#7A4FB5"},
+  {id:"z5", t:"Zone 5 – Le grand défi", d:"Le quiz final, puis mon avis.", c:"#1F8A4C"},
+];
+const ACTS = [
+  {id:"numerique", z:"z1", ico:"💻", lbl:"Les outils numériques", run:actNumerique},
+  {id:"secret",    z:"z1", ico:"🤫", lbl:"Chut, c'est confidentiel", run:actSecret},
+  {id:"suivi",     z:"z1", ico:"☎️", lbl:"Où est ma commande ?", run:actSuivi},
+  {id:"courriel",  z:"z1", ico:"📧", lbl:"J'écris un courriel",  run:actCourriel},
+  {id:"devinette", z:"z2", ico:"❓", lbl:"Qui suis-je ?",        run:actDevinette},
+  {id:"mystere",   z:"z2", ico:"🧺", lbl:"Le mot mystère",       run:actMystere},
+  {id:"ecoute",    z:"z2", ico:"🎧", lbl:"Écoute et écris",      run:actEcoute},
+  {id:"trous",     z:"z2", ico:"✏️", lbl:"Les phrases à trous",  run:actTrous},
+  {id:"memory",    z:"z2", ico:"🃏", lbl:"Le jeu des paires",    run:actMemory},
+  {id:"motsmeles", z:"z2", ico:"🔍", lbl:"Mots mêlés géants",    run:actMotsMeles},
+  {id:"ordre",     z:"z3", ico:"🔢", lbl:"Remettre dans l'ordre", run:actOrdre8},
+  {id:"adresse",   z:"z3", ico:"🏷️", lbl:"L'adresse sur le colis", run:actAdresse},
+  {id:"enligne",   z:"z3", ico:"🌐", lbl:"Lire une commande en ligne", run:actEnLigne},
+  {id:"carton",    z:"z3", ico:"📦", lbl:"Le bon carton",        run:actCarton},
+  {id:"poids",     z:"z3", ico:"⚖️", lbl:"Le prix du colis",     run:actPoids},
+  {id:"avisclients",z:"z3",ico:"⭐", lbl:"Les avis des clients", run:actAvisClients},
+  {id:"retour",    z:"z3", ico:"↩️", lbl:"Le retour d'un produit", run:actRetour},
+  {id:"caisse",    z:"z3", ico:"💶", lbl:"La caisse niveau 8",   run:actCaisse},
+  {id:"col_colis", z:"z4", ico:"📦", lbl:"Colorie le point de retrait", run:()=>actColor("col_colis")},
+  {id:"col_ordi",  z:"z4", ico:"💻", lbl:"Colorie l'ordinateur", run:()=>actColor("col_ordi")},
+  {id:"produit",   z:"z4", ico:"🛒", lbl:"Ma fiche produit",     run:actProduit},
+  {id:"defi",      z:"z5", ico:"🏆", lbl:"Le grand défi",        run:actDefi},
+  {id:"avis",      z:"z5", ico:"📝", lbl:"Mon avis",             run:actAvis},
+];
+const isDone = (st,a) => a.id==="avis" ? !!st.avis : !!st.results[a.id];
+
+/* ================= Écran : choix de l'élève ================= */
+function screenLogin(){
+  cur=null; curAct=null; refreshHeader(); if("speechSynthesis" in window) speechSynthesis.cancel();
+  app.innerHTML = `
+  <div class="panel" style="max-width:640px;margin:22px auto 0;text-align:center">
+    <div style="font-size:3.5rem">🧑‍💼</div>
+    <h2>Bienvenue dans le magasin ! 👋</h2>
+    ${consigne("Tu vas découvrir le métier d'équipier du commerce. Écris ton prénom, puis clique sur J'entre. Si tu as déjà commencé, écris le même prénom : tu retrouves ton travail.")}
+    <label for="pn"><b>Mon prénom</b></label>
+    <input id="pn" autocomplete="off" style="display:block;width:100%;font:inherit;font-size:1.4rem;padding:14px;border-radius:14px;border:3px solid var(--line);margin:10px 0 16px;text-align:center">
+    <button class="btn yellow" id="go" style="font-size:1.2rem">J'entre dans le magasin 🛒</button>
+  </div>`;
+  const inp=document.getElementById("pn"); inp.focus();
+  inp.onkeydown=e=>{ if(e.key==="Enter") enter(); };
+  document.getElementById("go").onclick=enter;
+}
+function enter(){
+  const v=(document.getElementById("pn").value||"").trim();
+  if(!v){ alert("Écris ton prénom d'abord 🙂"); return; }
+  let k=Object.keys(state.students).find(k=>norm(state.students[k].name)===norm(v));
+  if(!k){ k="s"+Date.now(); state.students[k]=newStudent(v); save(); }
+  cur=k; screenHome();
+}
+
+/* ================= Écran : plan du magasin ================= */
+function badgeHTML(st){ const b=st.badge; if(!b) return "";
+  return `<div class="mybadge" style="--bc:${b.color}"><div style="font-size:2rem">${b.emoji}</div><b>${esc(st.name)}</b><br><small>Équipier stagiaire</small></div>`; }
+function screenHome(){
+  curAct=null; refreshHeader(); window.scrollTo(0,0);
+  const st = state.students[cur]; const done = ACTS.filter(a=>isDone(st,a)).length;
+  app.innerHTML = `
+  <div class="home-grid">
+    <div>
+      <div class="panel" style="margin-top:0;margin-bottom:20px">
+        <h2>Bonjour ${esc(st.name)} !</h2>
+        ${consigne("Voici le plan du magasin. Commence par la zone 1. Clique sur une case pour jouer. À chaque jeu terminé, tu gagnes un tampon sur ta carte de fidélité. Tu peux rejouer autant de fois que tu veux.")}
+      </div>
+      ${ZONES.map(z=>`<section class="zone" style="--zc:${z.c}">
+        <h3>${z.t}</h3><p class="zd">${z.d}</p>
+        <div class="aisles">
+          ${ACTS.filter(a=>a.z===z.id).map(a=>{ const r=st.results[a.id]; const ok=isDone(st,a);
+            const sub = !ok ? "À faire" : (a.id==="avis"||a.z==="z4"||a.id==="badge") ? "Terminé" : `Terminé – ${r.best} / ${r.max}`;
+            return `<button class="aisle ${ok?"done":""}" onclick="openAct('${a.id}')"><div class="ico">${a.ico}</div><div class="lbl">${a.lbl}</div><div class="st">${sub}</div></button>`;}).join("")}
+        </div></section>`).join("")}
+    </div>
+    <aside class="card" aria-label="Ma carte de fidélité">
+      <h3>💳 Ma carte de fidélité</h3>
+      <div>${esc(st.name)}</div>
+      <div class="stamps">${ACTS.map(a=>`<div class="stamp ${isDone(st,a)?"on":""}" title="${esc(a.lbl)}">${isDone(st,a)?"⭐":a.ico}</div>`).join("")}</div>
+      <div class="count">${done} / ${ACTS.length} tampons</div>
+      ${done===ACTS.length?`<p>🏆 Bravo ! Tu as tout terminé !</p><button class="btn yellow small" onclick="screenDiplome()">🎓 Mon diplôme</button>`:`<p>Encore ${ACTS.length-done} jeu${ACTS.length-done>1?"x":""} à découvrir.</p>`}
+      ${badgeHTML(st)}
+      <button class="btn ghost small" style="margin-top:12px" onclick="screenLogin()">Ce n'est pas moi</button>
+    </aside>
+  </div>`;
+}
+function openAct(id){ curAct=id; if("speechSynthesis" in window) speechSynthesis.cancel(); const a = ACTS.find(x=>x.id===id); app.innerHTML=""; a.run(); window.scrollTo(0,0); }
+const actHeader = (title, ico) => `<div class="row" style="justify-content:space-between"><h2>${ico} ${title}</h2><button class="btn ghost small" onclick="screenHome()">⬅ Retour au magasin</button></div>`;
+
+function finish(id, score, max, details, msgOverride, extra){
+  const st = state.students[cur]; const prev = st.results[id]; delete st.progress[id]; curAct=null;
+  st.results[id] = { score, max, best: Math.max(score, prev?prev.best:0), attempts:(prev?prev.attempts:0)+1,
+                     date:new Date().toLocaleString("fr-FR"), details };
+  save();
+  const ratio = score/max; const stars = ratio>=.99?3: ratio>=.6?2: 1;
+  const msg = msgOverride || (stars===3?"Parfait ! Tu es un vrai équipier !": stars===2?"Très bien ! Tu as presque tout trouvé.":"Bien essayé ! Tu peux recommencer pour gagner plus d'étoiles.");
+  app.innerHTML = `<div class="panel result">
+    <h2>Jeu terminé ! Tampon gagné ⭐</h2>
+    <div class="stars" aria-label="${stars} étoiles sur 3">${"⭐".repeat(stars)}${"☆".repeat(3-stars)}</div>
+    ${msgOverride?"":`<p style="font-size:1.4rem"><b>${score} / ${max}</b></p>`}
+    <p>${msg} ${sayBtn(msg)}</p>
+    <div class="row" style="justify-content:center">
+      <button class="btn yellow" onclick="screenHome()">🛒 Retour au magasin</button>
+      <button class="btn ghost" onclick="openAct('${id}')">🔁 Rejouer</button>
+    </div>${extra||""}</div>`;
+  window.scrollTo(0,0); speak(msg); if(stars>=2) burst();
+}
+function burst(){
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const em=["⭐","🛒","🎉","💶","🥳"];
+  for(let i=0;i<22;i++){ const s=document.createElement("span"); s.className="burst"; s.textContent=em[i%em.length];
+    s.style.left="50%"; s.style.top="40%"; s.style.setProperty("--dx",(Math.random()*700-350)+"px"); s.style.setProperty("--dy",(Math.random()*500-300)+"px");
+    document.body.appendChild(s); setTimeout(()=>s.remove(),1500); }
+}
+
+/* ================= Moteur de quiz ================= */
+function runQuiz(box, questions, onEnd, keepOrder){
+  let i=0, score=0; const details=track([]);
+  function show(){
+    const q = questions[i]; let opts = q.opts.map((t,k)=>({t,ok:k===q.good})); if(!keepOrder) opts=shuffle(opts);
+    box.innerHTML = `<div class="progress"><div style="width:${i/questions.length*100}%"></div></div>
+      <p style="margin:0 0 6px;color:#3E5559">Question ${i+1} sur ${questions.length}</p>${q.pre||""}
+      <div class="row" style="align-items:flex-start;flex-wrap:nowrap">${sayBtn(q.q+" "+opts.map(o=>o.t).join(". "))}
+      <div class="question">${q.q}</div></div>
+      <div class="opts">${opts.map((o,k)=>`<button class="opt" data-k="${k}">${o.t}</button>`).join("")}</div><div id="fb"></div>`;
+    box.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const o = opts[+b.dataset.k];
+      box.querySelectorAll(".opt").forEach((x,k)=>{ x.disabled=true; if(opts[k].ok) x.classList.add("good"); });
+      if(!o.ok) b.classList.add("bad"); else score++;
+      details.push(`${q.q.replace(/<[^>]+>/g,"")} → « ${o.t} » ${o.ok?"✔":"✘"}`);
+      const fbText = (o.ok?"Bravo ! ":"Ce n'est pas ça. ") + (q.explain||"");
+      box.querySelector("#fb").innerHTML = `<div class="feedback ${o.ok?"good":"bad"}">${o.ok?"✅":"❌"} ${fbText}</div>`;
+      speak(fbText);
+      setTimeout(()=>{ if(!box.isConnected) return; i++; i<questions.length? show() : onEnd(score, details); }, o.ok?1800:3500);
+    });
+  }
+  show();
+}
+
+/* ================= Moteur de dialogue ================= */
+function dialogue(o){
+  let i=0, score=0; const det=track([]);
+  app.innerHTML=`<div class="panel">${actHeader(o.title,o.ico)}${consigne(o.cons)}<div class="chat" id="chat"></div><div id="ch"></div></div>`;
+  const chat=document.getElementById("chat"), ch=document.getElementById("ch");
+  const bub=(cls,who,t)=>chat.insertAdjacentHTML("beforeend",`<div class="bub ${cls}">${who?`<span class="who">${who}</span>`:""}${t}${cls!=="n"?sayBtn(t):""}</div>`);
+  function step(){
+    if(!chat.isConnected) return;
+    const S=o.steps[i]; if(S.n) bub("n","",S.n); if(S.c) bub("c",S.who||o.who,S.c);
+    speak([S.n,S.c].filter(Boolean).join(" "));
+    const opts=shuffle(S.opts.map((t,k)=>({t,ok:k===0})));
+    ch.innerHTML=`<p style="margin:14px 0 8px"><b>💬 Que dis-tu ?</b></p><div class="opts">${opts.map((x,k)=>`<button class="opt" data-k="${k}">${x.t}</button>`).join("")}</div><div id="fb"></div>`;
+    ch.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      const x=opts[+b.dataset.k];
+      ch.querySelectorAll(".opt").forEach((y,k)=>{ y.disabled=true; if(opts[k].ok) y.classList.add("good"); });
+      if(x.ok) score++; else b.classList.add("bad");
+      det.push(`${S.c||S.n} → « ${x.t} » ${x.ok?"✔":"✘"}`);
+      const t=(x.ok?"Bravo ! ":"Ce n'est pas la meilleure réponse. ")+(S.ex||"");
+      ch.querySelector("#fb").innerHTML=`<div class="feedback ${x.ok?"good":"bad"}">${x.ok?"✅":"❌"} ${t}</div>`; speak(t);
+      setTimeout(()=>{ if(!chat.isConnected) return; bub("m","🧑‍💼 Moi",S.opts[0]); ch.innerHTML=""; i++;
+        if(i<o.steps.length) setTimeout(step,600); else setTimeout(()=>{ if(chat.isConnected) finish(o.id,score,o.steps.length,det); },1400); }, x.ok?2000:3800);
+    });
+  }
+  step();
+}
+
+/* ================= Moteur « bien / pas bien » ================= */
+function yesNo(o){
+  const items=shuffle(o.items); let i=0, score=0; const det=track([]);
+  app.innerHTML=`<div class="panel">${actHeader(o.title,o.ico)}${consigne(o.cons)}<div id="g"></div></div>`;
+  const g=document.getElementById("g");
+  function show(){
+    const it=items[i];
+    g.innerHTML=`<div class="progress"><div style="width:${i/items.length*100}%"></div></div>
+      <div class="bigcard"><span class="e">${it[0]}</span>${it[1]} ${sayBtn(it[1])}</div>
+      <div class="two"><button class="btn" style="background:var(--green)" data-v="1">${o.yes}</button><button class="btn" style="background:var(--tomato)" data-v="0">${o.no}</button></div><div id="fb"></div>`;
+    g.querySelectorAll("[data-v]").forEach(b=>b.onclick=()=>{
+      const ok=+b.dataset.v===it[2]; if(ok) score++;
+      det.push(`${it[1]} → ${b.dataset.v==="1"?"oui":"non"} ${ok?"✔":"✘"}`);
+      g.querySelectorAll("[data-v]").forEach(x=>x.disabled=true);
+      const t=(ok?"Bravo ! ":"Non. ")+(it[3]||"");
+      g.querySelector("#fb").innerHTML=`<div class="feedback ${ok?"good":"bad"}">${ok?"✅":"❌"} ${t}</div>`; speak(t);
+      setTimeout(()=>{ if(!g.isConnected) return; i++; i<items.length?show():finish(o.id,score,items.length,det); }, ok?1800:3500);
+    });
+  }
+  show();
+}
+
+/* ================= Moteur « clique au bon endroit » ================= */
+function zoneGame(o){
+  const Q=shuffle(o.pool); let i=0, score=0; const det=track([]);
+  app.innerHTML=`<div class="panel">${actHeader(o.title,o.ico)}${consigne(o.cons)}<div id="qq"></div>
+    <div class="${o.cls||"map"}">${o.zones.map((z,k)=>`<button class="zbtn" data-k="${k}"><span class="e">${z[0]}</span>${z[1]}</button>`).join("")}</div><div id="fb"></div></div>`;
+  const zb=[...app.querySelectorAll(".zbtn")];
+  function show(){
+    const q=Q[i]; zb.forEach(b=>{ b.classList.remove("good","bad"); b.disabled=false; });
+    document.getElementById("qq").innerHTML=`<div class="progress"><div style="width:${i/Q.length*100}%"></div></div><p style="margin:0 0 4px;color:#3E5559">Question ${i+1} sur ${Q.length}</p><div class="row" style="flex-wrap:nowrap;margin-bottom:12px">${sayBtn(q[0])}<div class="question" style="margin:0">${q[0]}</div></div>`;
+    document.getElementById("fb").innerHTML=""; speak(q[0]);
+  }
+  zb.forEach(b=>b.onclick=()=>{
+    const q=Q[i], k=+b.dataset.k, ok=k===q[1]; if(ok) score++;
+    zb.forEach(x=>x.disabled=true); zb[q[1]].classList.add("good"); if(!ok) b.classList.add("bad");
+    det.push(`${q[0]} → ${o.zones[k][1]} ${ok?"✔":"✘"}`);
+    const t=(ok?"Bravo ! ":"Non, c'est : "+o.zones[q[1]][1]+". ")+(q[2]||"");
+    document.getElementById("fb").innerHTML=`<div class="feedback ${ok?"good":"bad"}">${ok?"✅":"❌"} ${t}</div>`; speak(t);
+    setTimeout(()=>{ if(!b.isConnected) return; i++; i<Q.length?show():finish(o.id,score,Q.length,det); }, ok?2000:3600);
+  });
+  show();
+}
+
+/* ================= Moteur « je compose un texte » ================= */
+function formGame(o){
+  let r=0, score=0; const det=track([]);
+  function play(){
+    const C=o.rounds[r], ans={};
+    app.innerHTML=`<div class="panel">${actHeader(`${o.title} (${r+1}/${o.rounds.length})`,o.ico)}${consigne(o.cons)}
+      <div class="bub n" style="max-width:100%;font-style:normal">${sayBtn(C.sit)} ${C.sit}</div>
+      <div class="msgcard"><b>${o.card}</b>
+        ${C.f.map((f,k)=>`<p style="margin:14px 0 6px"><b>${f[0]}</b></p><div class="row">${shuffle(f[1]).map(x=>`<button class="chip" data-f="${k}" data-v="${esc(x)}">${esc(x)}</button>`).join("")}</div>`).join("")}</div>
+      <p><button class="btn yellow" id="ok">${o.btn}</button></p><div id="fb"></div></div>`;
+    speak(C.sit);
+    app.querySelectorAll("[data-f]").forEach(b=>b.onclick=()=>{ ans[b.dataset.f]=b.dataset.v; app.querySelectorAll(`[data-f="${b.dataset.f}"]`).forEach(x=>x.classList.toggle("sel",x===b)); });
+    document.getElementById("ok").onclick=()=>{
+      const fb=document.getElementById("fb");
+      if(Object.keys(ans).length<C.f.length){ fb.innerHTML=`<div class="feedback bad">Choisis une réponse sur chaque ligne 🙂</div>`; return; }
+      let s=0, html="";
+      C.f.forEach((f,k)=>{ const ok=ans[k]===f[1][0]; if(ok) s++; det.push(`${o.title} ${r+1} – ${f[0]} « ${ans[k]} » ${ok?"✔":"✘"}`);
+        if(!ok) html+=`<div class="feedback bad">❌ <b>${f[0]}</b> la bonne réponse : ${esc(f[1][0])}</div>`; });
+      score+=s; app.querySelectorAll("[data-f],#ok").forEach(x=>x.disabled=true);
+      const g=C.f.map(f=>f[1][0]);
+      fb.innerHTML=(s===C.f.length?`<div class="feedback good">✅ Bravo, c'est parfait !</div>`:html)+o.show(g);
+      speak((s===C.f.length?"Bravo, c'est parfait ! ":`Tu as ${s} bonnes réponses sur ${C.f.length}. Écoute la bonne version. `)+g.join(" "));
+      setTimeout(()=>{ if(!fb.isConnected) return; r++; r<o.rounds.length?play():finish(o.id,score,o.rounds.length*C.f.length,det); }, s===C.f.length?9000:12000);
+    };
+  }
+  play();
+}
+
+/* ================= ZONE 1 ================= */
+function actNumerique(){
+  const Q=[
+    {q:"📟 La douchette, c'est :", opts:["Un petit scanner que l'on tient à la main pour lire les codes-barres","Un outil pour se laver","Un jouet"], good:0},
+    {q:"🏷️ Dans certains magasins, les prix sont sur des étiquettes électroniques. Elles :", opts:["Changent le prix toutes seules, sans papier","Sonnent quand on passe","Servent à payer"], good:0},
+    {q:"📲 L'application du magasin, sur le téléphone, sert par exemple à :", opts:["Voir les promotions et utiliser sa carte de fidélité","Appeler les pompiers","Jouer à des jeux vidéo"], good:0},
+    {q:"🌐 Sur le site internet du magasin, le client peut :", opts:["Commander des produits","Toucher les produits","Goûter les produits"], good:0},
+    {q:"🖥️ Les écrans dans le magasin servent souvent à :", opts:["Montrer des promotions et des informations","Regarder des films","Jouer"], good:0},
+    {q:"📱 La tablette du vendeur peut servir à :", opts:["Vérifier s'il reste un produit en stock","Faire des selfies avec les clients","Lire ses messages personnels"], good:0},
+    {q:"🔒 Mon code pour la caisse ou la tablette :", opts:["Je le garde secret","Je le dis à tout le monde","Je l'écris sur l'écran"], good:0},
+    {q:"💻 L'ordinateur du magasin, je l'utilise pour :", opts:["Le travail demandé par mon responsable","Mes réseaux sociaux","Regarder des vidéos"], good:0},
+  ];
+  app.innerHTML=`<div class="panel">${actHeader("Les outils numériques","💻")}${consigne("Dans le magasin, il y a de plus en plus d'outils numériques. À quoi servent-ils ? Choisis la bonne réponse.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), Q, (s,d)=>finish("numerique",s,Q.length,d));
+}
+function actSecret(){
+  yesNo({id:"secret", title:"Chut, c'est confidentiel", ico:"🤫", yes:"👍 C'est bien", no:"👎 Ce n'est pas bien",
+    cons:"Les informations sur les clients et sur le magasin sont confidentielles : on ne les donne pas aux autres. Est-ce un bon comportement ?",
+    items:[["📇","Un inconnu me demande l'adresse d'une cliente. Je la lui donne.",0,"Les informations des clients sont confidentielles : je ne les donne jamais."],
+      ["🤫","Je ne parle pas des achats des clients à mes amis.",1,"Ce que le client achète ne regarde que lui."],
+      ["📸","Je prends un client en photo pour la mettre sur internet.",0,"On ne photographie pas les clients et on ne publie rien sur eux."],
+      ["🔒","Je garde mon mot de passe secret.",1,"Personne ne peut l'utiliser à ma place."],
+      ["🧾","Je laisse traîner les bons de commande avec les noms et les adresses des clients.",0,"Ces papiers ont des informations personnelles : on les range."],
+      ["💳","Je regarde ailleurs quand le client tape son code de carte.",1,"Son code est secret."],
+      ["📱","Je publie sur les réseaux sociaux une photo de la réserve du magasin.",0,"Je ne publie rien sur le magasin sans l'accord de mon responsable."],
+      ["🗣️","Un client me raconte un problème personnel. Je le répète à tout le monde.",0,"Je respecte la vie privée du client."],
+      ["🖥️","Quand je quitte l'ordinateur, je ferme ma session.",1,"Comme ça, personne ne l'utilise à ma place."],
+      ["📞","Au téléphone, quelqu'un veut des informations sur un client. Je dis que je ne peux pas, et je préviens mon responsable.",1,"C'est la bonne réaction."]]});
+}
+function actSuivi(){
+  dialogue({id:"suivi", title:"Où est ma commande ?", ico:"☎️", who:"☎️ La cliente",
+    cons:"Une cliente téléphone au magasin. Elle a commandé sur le site internet. Aide-la à savoir où est sa commande.",
+    steps:[
+      {c:"Bonjour, j'ai commandé sur votre site. Je voudrais savoir si ma commande est arrivée.", opts:["Bonjour madame. Pouvez-vous me donner votre numéro de commande, s'il vous plaît ?","Je sais pas, moi.","Venez voir."], ex:"Le numéro de commande permet de retrouver la commande."},
+      {c:"Oui : c'est la commande numéro 4 5 8 2.", opts:["Merci. Je répète : 4 5 8 2. Un instant, je regarde.","OK. (Je n'écoute pas.)","C'est trop long."], ex:"Je répète le numéro pour être sûr de ne pas me tromper."},
+      {n:"Tu regardes sur la tablette : la commande 4582 est prête. Elle attend au point de retrait.", opts:["Bonne nouvelle : votre commande est prête. Vous pouvez venir la chercher au point de retrait.","Elle est là, quelque part.","Je ne trouve rien, au revoir."], ex:"Je donne une information claire."},
+      {c:"Super ! Je dois apporter quelque chose ?", opts:["Je vais demander à mon responsable, un instant.","Rien du tout, venez comme ça.","Votre carte bancaire et votre code secret."], ex:"Si je ne connais pas la règle du magasin, je demande. Et on ne demande JAMAIS un code de carte."},
+      {n:"Ton responsable te répond : il faut montrer le message de confirmation de la commande.", opts:["Il faut montrer le message de confirmation de votre commande, sur votre téléphone ou sur papier.","Apportez votre carte bancaire.","Apportez rien."], ex:"Je redonne l'information exacte."},
+      {c:"Parfait, merci beaucoup !", opts:["Avec plaisir. À bientôt, madame, au revoir !","Ouais.","(Je raccroche sans rien dire.)"], ex:"Je finis poliment."},
+    ]});
+}
+function actCourriel(){
+  const nm=state.students[cur].name;
+  formGame({id:"courriel", title:"J'écris un courriel", ico:"📧", card:"📧 MON COURRIEL", btn:"📤 J'envoie mon courriel",
+    cons:"Un courriel (ou mail), c'est un message envoyé par internet. Pour écrire à un tuteur, on est poli. Choisis les bonnes phrases.",
+    show:g=>`<div class="mail"><div><b>À :</b> M. Durand</div><div><b>Objet :</b> ${esc(g[0])}</div><hr><p>${esc(g[1])}</p><p>${esc(g[2])}</p><p>${esc(g[3])}</p><p>${esc(g[4])}</p></div>`,
+    rounds:[
+      {sit:"Tu es malade aujourd'hui. Tu préviens ton tuteur, M. Durand, par courriel. Tu as déjà prévenu le lycée.",
+       f:[["Objet :",["Absence aujourd'hui","Salut","Rien"]],["Je commence par :",["Bonjour Monsieur Durand,","Yo Durand,","Coucou,"]],
+          ["Le message :",["Je suis malade et je ne pourrai pas venir au magasin aujourd'hui. J'ai aussi prévenu le lycée.","Je viens pas.","Je suis malade, débrouillez-vous."]],
+          ["Je finis par :",["Je vous prie de m'excuser. Bonne journée.","Bisous.","À plus."]],["Signature :",[nm,"M. Durand","Le lycée"]]]},
+      {sit:"Tu veux demander à ton tuteur, M. Durand, à quelle heure tu commences lundi.",
+       f:[["Objet :",["Question sur mes horaires de lundi","Hé","Lundi ?"]],["Je commence par :",["Bonjour Monsieur Durand,","Salut mec,","Wesh,"]],
+          ["Le message :",["Pouvez-vous me dire à quelle heure je commence lundi, s'il vous plaît ?","Je commence quand ?","Dites-moi l'heure."]],
+          ["Je finis par :",["Merci beaucoup. Bonne journée.","Réponds vite.","Bye."]],["Signature :",[nm,"Lundi","Le magasin"]]]}]});
+}
+
+/* ================= ZONE 2 ================= */
+function actDevinette(){
+  const qs = pickN(VOCAB,8).map(v=>{ const others=pickN(VOCAB.filter(x=>x!==v),2);
+    return {q:"Qui suis-je ? "+v.def, opts:[v.e+" "+v.d, ...others.map(o=>o.e+" "+o.d)], good:0, explain:"C'est : "+v.d+"."}; });
+  app.innerHTML = `<div class="panel">${actHeader("Qui suis-je ?","❓")}
+    ${consigne("Lis la devinette et trouve le bon mot du magasin.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), qs, (s,d)=>finish("devinette",s,qs.length,d));
+}
+
+function actMystere(){
+  const words = pickN(VOCAB,5); let n=0, score=0; const det=track([]);
+  const food=["🍎","🥖","🧀","🥛","🍌","🥕","🍪"];
+  app.innerHTML = `<div class="panel">${actHeader("Le mot mystère","🧺")}
+    ${consigne("Trouve le mot caché en cliquant sur les lettres. Attention : à chaque erreur, un produit tombe du panier !")}<div id="g"></div></div>`;
+  const g=document.getElementById("g");
+  function play(){
+    const v=words[n]; const found=new Set(); let lives=food.length;
+    const draw=()=>{
+      g.innerHTML=`<p style="margin:0">Mot ${n+1} sur ${words.length}</p>
+        <div class="feedback info row" style="flex-wrap:nowrap">${sayBtn("Indice. "+v.def)}<span>💡 Indice : ${v.def}</span></div>
+        <div class="word">${[...v.w].map(l=>`<span>${found.has(l)?l:""}</span>`).join("")}</div>
+        <div class="basket" aria-label="Panier">🧺 ${food.slice(0,lives).join(" ")}${"<span style='opacity:.2'>⬜</span>".repeat(food.length-lives)}</div>
+        <div class="keys" style="margin-top:14px">${"ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").map(l=>`<button class="key" data-l="${l}">${l}</button>`).join("")}</div><div id="fb"></div>`;
+    };
+    draw();
+    const bind=()=>g.querySelectorAll(".key").forEach(k=>k.onclick=()=>{
+      const l=k.dataset.l; if(v.w.includes(l)) found.add(l); else lives--;
+      const win=[...v.w].every(c=>found.has(c));
+      const tried=[...g.querySelectorAll(".key:disabled")].map(x=>x.dataset.l).concat(l);
+      draw(); g.querySelectorAll(".key").forEach(x=>{ if(tried.includes(x.dataset.l)){ x.disabled=true; if(v.w.includes(x.dataset.l)) x.classList.add("g"); } });
+      if(win||lives===0){
+        g.querySelectorAll(".key").forEach(x=>x.disabled=true);
+        if(win) score++; det.push(`${v.d} : ${win?"trouvé ✔ ("+(food.length-lives)+" erreur(s))":"pas trouvé ✘"}`);
+        if(!win) g.querySelector(".word").innerHTML=[...v.w].map(c=>`<span>${c}</span>`).join("");
+        const t = win?`Bravo ! Le mot était ${v.d}.`:`Dommage ! Le mot était ${v.d}.`;
+        g.querySelector("#fb").innerHTML=`<div class="feedback ${win?"good":"bad"}">${win?"🎉":"😕"} ${t}</div>`;
+        speak(t); setTimeout(()=>{ if(!g.isConnected) return; n++; n<words.length?play():finish("mystere",score,words.length,det); }, 2600);
+      } else bind();
+    });
+    bind();
+  }
+  play();
+}
+
+function actLettres(){
+  const words = pickN(VOCAB.filter(v=>v.w.length<=8),6); let n=0, score=0; const det=track([]);
+  app.innerHTML = `<div class="panel">${actHeader("Lettres mélangées","🔤")}
+    ${consigne("Les lettres sont mélangées ! Clique sur les lettres dans le bon ordre pour écrire le mot.")}<div id="g"></div></div>`;
+  const g=document.getElementById("g");
+  function play(){
+    const v=words[n]; let mix; do{ mix=shuffle([...v.w]); }while(mix.join("")===v.w);
+    let built=[], help=false, errors=0;
+    const draw=()=>{
+      g.innerHTML=`<p style="margin:0">Mot ${n+1} sur ${words.length}</p>
+        <div class="bigcard"><span class="e">${v.e}</span></div>
+        <div class="word">${[...v.w].map((c,i)=>`<span>${built[i]!==undefined?mix[built[i]]:(help&&i===0?`<i style="opacity:.4">${c}</i>`:"")}</span>`).join("")}</div>
+        <div class="letters">${mix.map((c,i)=>`<button class="letter" data-i="${i}" ${built.includes(i)?"disabled":""}>${c}</button>`).join("")}</div>
+        <div class="row" style="justify-content:center;margin-top:14px"><button class="btn ghost small" id="bk">⌫ Effacer</button><button class="btn ghost small" id="hp">💡 Indice</button></div><div id="fb"></div>`;
+      g.querySelectorAll(".letter").forEach(b=>b.onclick=()=>{ built.push(+b.dataset.i); draw(); check(); });
+      g.querySelector("#bk").onclick=()=>{ built.pop(); draw(); };
+      g.querySelector("#hp").onclick=()=>{ help=true; draw(); g.querySelector("#fb").innerHTML=`<div class="feedback info row" style="flex-wrap:nowrap">${sayBtn(v.def)}<span>💡 ${v.def}</span></div>`; };
+    };
+    const check=()=>{
+      if(built.length<v.w.length) return;
+      const w=built.map(i=>mix[i]).join("");
+      if(w===v.w){ const ok=errors===0&&!help; if(ok) score++; det.push(`${v.d} ✔ ${errors?errors+" erreur(s)":""}${help?" (avec indice)":""}`);
+        g.querySelectorAll(".letter,#bk,#hp").forEach(x=>x.disabled=true);
+        g.querySelector("#fb").innerHTML=`<div class="feedback good">🎉 Bravo ! ${v.d}</div>`;
+        speak("Bravo ! "+v.d);
+        setTimeout(()=>{ if(!g.isConnected) return; n++; n<words.length?play():finish("lettres",score,words.length,det); }, 1800);
+      } else { errors++; g.querySelector(".word").classList.add("shake"); g.querySelector("#fb").innerHTML=`<div class="feedback bad">Ce n'est pas le bon ordre. Clique sur Effacer et essaie encore.</div>`; }
+    };
+    draw();
+  }
+  play();
+}
+
+function actMemory(){
+  const sel = pickN(VOCAB,8);
+  const cards = shuffle(sel.flatMap((v,i)=>[{p:i,html:`<span class="e">${v.e}</span>`,say:v.d},{p:i,html:v.d,say:v.d}]));
+  let open=[], found=0, moves=0, lock=false;
+  app.innerHTML = `<div class="panel">${actHeader("Le jeu des paires","🃏")}
+    ${consigne("Retourne 2 cartes. Trouve l'image et le mot qui vont ensemble.")}
+    <p>Coups : <b id="mv">0</b> – Paires : <b id="pf">0</b> / ${sel.length}</p>
+    <div class="mem">${cards.map((c,i)=>`<button class="mcard" data-i="${i}" aria-label="Carte">🛒</button>`).join("")}</div></div>`;
+  app.querySelectorAll(".mcard").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i; if(lock||open.includes(i)||b.classList.contains("done")) return;
+    b.classList.add("open"); b.innerHTML=cards[i].html; speak(cards[i].say); open.push(i);
+    if(open.length===2){ moves++; document.getElementById("mv").textContent=moves; const [a,c]=open; setTimeout(()=>live([`En cours : ${moves} coups, ${found} paire(s) trouvée(s)`]),0);
+      if(cards[a].p===cards[c].p){ [a,c].forEach(k=>app.querySelector(`.mcard[data-i="${k}"]`).classList.add("done")); open=[]; found++; document.getElementById("pf").textContent=found;
+        if(found===sel.length){ const s=moves<=13?3:moves<=19?2:1; setTimeout(()=>finish("memory",s,3,[`Terminé en ${moves} coups`]),700); }
+      } else { lock=true; setTimeout(()=>{ [a,c].forEach(k=>{const x=app.querySelector(`.mcard[data-i="${k}"]`); x.classList.remove("open"); x.innerHTML="🛒";}); open=[]; lock=false; },1100); }
+    }
+  });
+}
+
+function actMotsMeles(){
+  const N=12; const words = pickN(VOCAB.filter(v=>v.w.length<=12),9).map(v=>v.w);
+  let grid;
+  for(let t=0;t<200;t++){
+    grid=Array(N*N).fill(null); let ok=true;
+    for(const w of [...words].sort((a,b)=>b.length-a.length)){
+      let placed=false;
+      for(let k=0;k<300&&!placed;k++){
+        const h=Math.random()<.5, r=Math.floor(Math.random()*(h?N:N-w.length+1)), c=Math.floor(Math.random()*(h?N-w.length+1:N));
+        const cells=[...w].map((_,i)=>h?r*N+c+i:(r+i)*N+c);
+        if(cells.every((x,i)=>grid[x]===null||grid[x]===w[i])){ cells.forEach((x,i)=>grid[x]=w[i]); placed=true; }
+      }
+      if(!placed){ ok=false; break; }
+    }
+    if(ok) break;
+  }
+  const A="ABCDEFGHIJLMNOPRSTUV"; grid=grid.map(x=>x||A[Math.floor(Math.random()*A.length)]);
+  const foundW=new Set(); let start=null, wrong=0;
+  app.innerHTML = `<div class="panel">${actHeader("Mots mêlés","🔍")}
+    ${consigne("Trouve les mots du magasin dans la grille. Les mots sont écrits de gauche à droite, ou de haut en bas. Clique sur la première lettre du mot, puis sur la dernière lettre.")}
+    <div class="wl" id="wl"></div>
+    <div class="ws" style="grid-template-columns:repeat(${N},1fr)">${grid.map((l,i)=>`<button data-i="${i}">${l}</button>`).join("")}</div>
+    <div id="fb"></div><p style="text-align:center"><button class="btn ghost small" id="stop">J'arrête et je termine</button></p></div>`;
+  const wl=()=>document.getElementById("wl").innerHTML=words.map(w=>`<span class="${foundW.has(w)?"f":""}">${VOCAB.find(v=>v.w===w).d}</span>`).join("");
+  wl();
+  const end=()=>finish("motsmeles",foundW.size,words.length,[`Mots trouvés : ${[...foundW].join(", ")||"aucun"}`,`Mauvaises sélections : ${wrong}`]);
+  document.getElementById("stop").onclick=end;
+  app.querySelectorAll(".ws button").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i, fb=document.getElementById("fb");
+    if(start===null){ start=i; b.classList.add("start"); return; }
+    const s=start; start=null; app.querySelector(`.ws button[data-i="${s}"]`).classList.remove("start");
+    const r1=Math.floor(s/N),c1=s%N,r2=Math.floor(i/N),c2=i%N; let cells=null;
+    if(r1===r2){ const a=Math.min(c1,c2),z=Math.max(c1,c2); cells=[]; for(let c=a;c<=z;c++) cells.push(r1*N+c); }
+    else if(c1===c2){ const a=Math.min(r1,r2),z=Math.max(r1,r2); cells=[]; for(let r=a;r<=z;r++) cells.push(r*N+c1); }
+    const w = cells ? cells.map(x=>grid[x]).join("") : "";
+    const hit = words.find(x=>!foundW.has(x) && (x===w || x===[...w].reverse().join("")));
+    if(hit){ foundW.add(hit); live([`Mots trouvés : ${[...foundW].join(", ")}`]); cells.forEach(x=>app.querySelector(`.ws button[data-i="${x}"]`).classList.add("f")); wl();
+      const d=VOCAB.find(v=>v.w===hit).d; fb.innerHTML=`<div class="feedback good">✅ Tu as trouvé : ${d} !</div>`; speak(d);
+      if(foundW.size===words.length) setTimeout(end,900);
+    } else { wrong++; fb.innerHTML=`<div class="feedback bad">Ce n'est pas un mot de la liste. Clique sur la première lettre, puis sur la dernière lettre.</div>`; }
+  });
+}
+
+/* ================= ZONE 2 (suite) ================= */
+function actEcoute(){
+  const words=pickN(VOCAB.filter(v=>v.w.length<=10),6); let n=0, score=0; const det=track([]);
+  app.innerHTML=`<div class="panel">${actHeader("Écoute et écris","🎧")}
+    ${consigne("Écoute le mot. Regarde l'image et l'indice. Écris le mot, puis clique sur Valider. Les accents ne comptent pas.")}<div id="g"></div></div>`;
+  const g=document.getElementById("g");
+  function play(){
+    const v=words[n]; let tries=0, help=0;
+    g.innerHTML=`<p style="margin:0">Mot ${n+1} sur ${words.length}</p>
+      <div class="bigcard"><span class="e">${v.e}</span><button class="btn yellow" data-say="${esc(v.d)}">🔊 Écouter le mot</button></div>
+      <div class="feedback info">💡 ${v.def}</div>
+      <p>Le mot a <b>${v.w.length}</b> lettres.</p>
+      <input id="ans" autocomplete="off" aria-label="Écris le mot" style="width:100%;font:inherit;font-size:1.5rem;padding:12px;border-radius:12px;border:3px solid var(--line);text-align:center;text-transform:uppercase">
+      <div class="row" style="margin-top:12px"><button class="btn yellow" id="ok">✅ Valider</button><button class="btn ghost small" id="hp">💡 Donne-moi une lettre</button></div><div id="fb"></div>`;
+    speak(v.d);
+    const inp=g.querySelector("#ans"); inp.focus();
+    inp.onkeydown=e=>{ if(e.key==="Enter") check(); };
+    g.querySelector("#ok").onclick=check;
+    g.querySelector("#hp").onclick=()=>{ help=Math.min(help+1,v.w.length-1); inp.value=v.d.slice(0,help).toUpperCase(); inp.focus(); };
+    function check(){
+      const a=norm(inp.value).replace(/[^a-z]/g,""), fb=g.querySelector("#fb");
+      if(!a){ fb.innerHTML=`<div class="feedback bad">Écris le mot 🙂</div>`; return; }
+      tries++;
+      const ok=a===v.w.toLowerCase();
+      if(ok||tries>=3){
+        if(ok&&tries===1&&help===0) score++;
+        det.push(`${v.d} : « ${inp.value} » ${ok?"✔":"✘"}${tries>1?" – "+tries+" essais":""}${help?" – "+help+" lettre(s) donnée(s)":""}`);
+        const t= ok?`Bravo ! ${v.d}.`:`Le mot était : ${v.d}.`;
+        fb.innerHTML=`<div class="feedback ${ok?"good":"bad"}">${ok?"🎉":"😕"} ${t}</div>`; speak(t);
+        g.querySelectorAll("#ok,#hp,#ans").forEach(x=>x.disabled=true);
+        setTimeout(()=>{ if(!g.isConnected) return; n++; n<words.length?play():finish("ecoute",score,words.length,det); }, ok?2000:3200);
+      } else { fb.innerHTML=`<div class="feedback bad">❌ Pas tout à fait. Écoute encore et vérifie les lettres.</div>`; speak(v.d); inp.select(); }
+    }
+  }
+  play();
+}
+
+function actTrous(){
+  const Q=[
+    ["Le paquet que l'on envoie au client, c'est un ______ .",["colis","rayon","ticket"],"Un colis."],
+    ["Sur le colis, j'écris l'______ du client.",["adresse","avis","écran"],"L'adresse."],
+    ["Le petit scanner que je tiens à la main, c'est la ______ .",["douchette","tablette","balance"],"La douchette."],
+    ["La personne qui reçoit le colis, c'est le ______ .",["destinataire","fournisseur","tuteur"],"Le destinataire."],
+    ["Les informations sur les clients sont ______ .",["confidentielles","numériques","inflammables"],"Confidentielles."],
+    ["Mon mot de passe, je le garde ______ .",["secret","local","bio"],"Secret."],
+    ["Le client donne son ______ sur le magasin, avec des étoiles.",["avis","colis","suivi"],"Son avis."],
+    ["Le client rapporte un produit : c'est un ______ .",["retour","courriel","site"],"Un retour."],
+    ["J'envoie un message par internet : c'est un ______ .",["courriel","colis","carton"],"Un courriel."],
+    ["Le client commande sur le ______ internet du magasin.",["site","rayon","carton"],"Le site internet."],
+  ];
+  app.innerHTML=`<div class="panel">${actHeader("Les phrases à trous","✏️")}${consigne("Il manque un mot dans la phrase. Choisis le bon mot.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), shuffle(Q).map(x=>({q:x[0], opts:x[1], good:0, explain:x[2]})), (s,d)=>finish("trous",s,Q.length,d));
+}
+
+/* ================= ZONE 3 ================= */
+function ordreGame(id,T,ico,cons,rounds){
+  let r=0, score=0; const det=track([]);
+  function play(){
+    const R=rounds[r]; const mix=shuffle(R.steps.map((s,i)=>({s,i}))); let step=0, err=0;
+    app.innerHTML=`<div class="panel">${actHeader(`${T} – ${R.t} (${r+1}/${rounds.length})`,ico)}
+      ${consigne(cons)}
+      <div class="opts" id="mx">${mix.map((m,k)=>`<button class="opt" data-k="${k}">${m.s}</button>`).join("")}</div>
+      <h3 style="margin-top:18px">Le bon ordre</h3><ol id="okl" style="font-size:1.05rem"></ol><div id="fb"></div></div>`;
+    app.querySelectorAll("#mx .opt").forEach(b=>b.onclick=()=>{
+      const m=mix[+b.dataset.k], fb=document.getElementById("fb");
+      if(m.i===step){ step++; b.remove(); document.getElementById("okl").insertAdjacentHTML("beforeend",`<li>${m.s}</li>`);
+        fb.innerHTML=`<div class="feedback good">✅ Oui !</div>`; speak(m.s);
+        if(step===R.steps.length){ if(err<=1) score++; det.push(`${R.t} : ${err} erreur(s)`);
+          fb.innerHTML=`<div class="feedback good">🎯 Bravo, tout est dans l'ordre !</div>`;
+          setTimeout(()=>{ if(!fb.isConnected) return; r++; r<rounds.length?play():finish(id,score,rounds.length,det); },2000); }
+      } else { err++; b.classList.remove("shake"); void b.offsetWidth; b.classList.add("shake");
+        fb.innerHTML=`<div class="feedback bad">❌ Ce n'est pas encore cette étape. Cherche celui qui vient en numéro ${step+1}.</div>`; }
+    });
+  }
+  play();
+}
+
+function minCoins(v){ let n=0; for(const c of [2000,1000,500,200,100,50,20,10]){ n+=Math.floor(v/c); v%=c; } return n; }
+function actCaisse(){
+  const rounds=[{items:[["👕 Tee-shirts (2 × 8,00 €)",1600],["🧢 Casquette",600]],paid:5000},
+                {items:[["📱 Coque de téléphone",1290],["🔌 Câble",790]],paid:5000},
+                {items:[["📚 Livre",850],["✏️ Crayons",320],["🏷️ Remise",-170]],paid:2000},
+                {items:[["☕ Tasse",450],["🍫 Chocolat",210],["🎁 Papier cadeau",150]],paid:1000}];
+  const money=[[2000,"20 €","bill b20"],[1000,"10 €","bill b10"],[500,"5 €","bill b5"],[200,"2 €","coin c-bi"],[100,"1 €","coin c-bi"],[50,"50 c","coin c-gold"],[20,"20 c","coin c-gold"],[10,"10 c","coin c-gold"]];
+  const euro=c=>(c/100).toFixed(2).replace(".",",")+" €";
+  let r=0, score=0; const det=track([]);
+  function show(){
+    const R=rounds[r]; const total=R.items.reduce((s,i)=>s+i[1],0); const due=R.paid-total;
+    const choices=shuffle([total,total+100,total-50]); let t1=0;
+    const ticket=tot=>`<div class="ticket"><b>TICKET</b><br>${R.items.map(i=>`${i[0]} ...... ${euro(i[1])}`).join("<br>")}<div class="tot">TOTAL : ${tot}</div>${tot!=="?"?`<div>Le client donne : <b>${euro(R.paid)}</b></div>`:""}</div>`;
+    app.innerHTML=`<div class="panel">${actHeader(`La caisse – client ${r+1} sur ${rounds.length}`,"💶")}
+      ${consigne("Étape 1 : additionne les prix. Attention : une ligne avec un moins, c'est une remise. Elle fait baisser le total. Quel est le total à payer ?")}
+      <div class="row" style="align-items:flex-start;gap:24px">${ticket("?")}
+        <div style="flex:1;min-width:240px"><div class="opts">${choices.map(c=>`<button class="opt" data-v="${c}">${euro(c)}</button>`).join("")}</div>
+        <p><button class="btn ghost small" id="hlp">💡 Aide</button></p><div id="fb"></div></div></div></div>`;
+    document.getElementById("hlp").onclick=()=>{ document.getElementById("fb").innerHTML=`<div class="feedback info">💡 ${R.items.map(i=>euro(i[1])).join(" + ")} = ?</div>`; };
+    app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
+      t1++; const fb=document.getElementById("fb");
+      if(+b.dataset.v===total){ if(t1===1) score++; det.push(`Client ${r+1} – total ${euro(total)} ${t1===1?"du 1er coup ✔":"en "+t1+" essais"}`);
+        fb.innerHTML=`<div class="feedback good">✅ Oui, le total est ${euro(total)}.</div>`; speak("Oui !");
+        app.querySelectorAll(".opt").forEach(x=>x.disabled=true); setTimeout(()=>{ if(fb.isConnected) step2(); },1500);
+      } else { b.disabled=true; b.classList.add("bad"); fb.innerHTML=`<div class="feedback bad">❌ Ce n'est pas le bon total. Recompte : ${R.items.map(i=>euro(i[1])).join(" + ")}</div>`; }
+    });
+    function step2(){
+      let tray=[], tries=0, help=false;
+      app.innerHTML=`<div class="panel">${actHeader(`La caisse – client ${r+1} sur ${rounds.length}`,"💶")}
+        ${consigne(`Étape 2 : le client paie avec ${R.paid/100} euros. Rends-lui la monnaie. Défi bonus : utilise le moins de pièces et de billets possible !`)}
+        <div class="row" style="align-items:flex-start;gap:24px">${ticket(euro(total))}
+          <div style="flex:1;min-width:260px">
+            <div class="tray"><div>Je rends au client :</div><div class="sum" id="sum">0,00 €</div><div id="tr" style="font-size:.95rem"></div></div>
+            <div class="money">${money.map(m=>`<button class="${m[2]}" data-v="${m[0]}" aria-label="${m[1]}">${m[1]}</button>`).join("")}</div>
+            <div class="row"><button class="btn yellow" id="ok">✅ Je rends la monnaie</button><button class="btn ghost small" id="clr">↩ Tout reprendre</button><button class="btn ghost small" id="hlp">💡 Aide</button></div>
+            <div id="fb"></div></div></div></div>`;
+      const upd=()=>{ const s=tray.reduce((a,b)=>a+b,0); document.getElementById("sum").textContent=euro(s); document.getElementById("tr").textContent=tray.map(v=>money.find(m=>m[0]===v)[1]).join(" + "); };
+      app.querySelectorAll(".money button").forEach(b=>b.onclick=()=>{ tray.push(+b.dataset.v); upd(); });
+      document.getElementById("clr").onclick=()=>{ tray=[]; upd(); };
+      document.getElementById("hlp").onclick=()=>{ help=true; document.getElementById("fb").innerHTML=`<div class="feedback info">💡 Ce que le client donne − le total = la monnaie.<br>${euro(R.paid)} − ${euro(total)} = ?</div>`; };
+      document.getElementById("ok").onclick=()=>{
+        const s=tray.reduce((a,b)=>a+b,0); tries++; const fb=document.getElementById("fb");
+        if(s===due){ if(tries===1) score++; const mn=minCoins(due), best=tray.length===mn; if(best) score++;
+          det.push(`Client ${r+1} – monnaie ${euro(due)} ${tries===1?"du 1er coup ✔":"en "+tries+" essais"}${help?" (avec l'aide)":""} – ${tray.length} pièce(s)/billet(s), minimum ${mn}${best?" ⭐":""}`);
+          const tt= best?`Exact ! Et avec le moins de pièces possible : défi bonus réussi !`:`Exact ! Mais tu pouvais utiliser moins de pièces : ${mn} suffisaient.`; fb.innerHTML=`<div class="feedback good">✅ ${tt}</div>`; speak(tt);
+          app.querySelectorAll(".money button,#ok,#clr,#hlp").forEach(x=>x.disabled=true);
+          setTimeout(()=>{ if(!fb.isConnected) return; r++; r<rounds.length? show() : finish("caisse", score, rounds.length*3, det); }, 2600);
+        } else fb.innerHTML=`<div class="feedback bad">❌ Tu rends ${euro(s)}. ${s>due?"C'est trop !":"Ce n'est pas assez."} Essaie encore.</div>`;
+      };
+    }
+  }
+  show();
+}
+
+function actOrdre8(){
+  ordreGame("ordre","Remettre dans l'ordre","🔢","Les étapes sont mélangées. Clique sur les étapes dans le bon ordre : la première d'abord.",[
+   {t:"Préparer un colis", steps:["📄 Je lis la commande.","🔎 Je prends les bons produits.","📦 Je choisis un carton à la bonne taille.","🧻 Je protège les produits fragiles.","🔒 Je ferme le carton avec du ruban adhésif.","🏷️ Je colle l'étiquette avec l'adresse."]},
+   {t:"Le retour d'un produit", steps:["👋 J'accueille le client.","🧾 Je demande le ticket de caisse.","🔍 Je regarde si le produit est en bon état.","🧑‍💼 J'appelle mon responsable, qui valide le retour.","🔄 Le client reçoit un échange ou un remboursement.","📦 Je range le produit rapporté à l'endroit prévu."]},
+   {t:"L'inventaire avec la douchette", steps:["🔋 J'allume la douchette.","📟 Je scanne le code-barres du produit.","🔢 Je compte les produits.","⌨️ Je tape le nombre.","✅ Je valide.","➡️ Je passe au produit suivant."]}]);
+}
+function actAdresse(){
+  formGame({id:"adresse", title:"L'adresse sur le colis", ico:"🏷️", card:"🏷️ ÉTIQUETTE DU COLIS", btn:"✅ Je colle l'étiquette",
+    cons:"En France, l'adresse s'écrit en 3 lignes : le nom, puis le numéro et la rue, puis le code postal (5 chiffres) et la ville. Choisis la bonne réponse pour chaque ligne.",
+    show:g=>`<div class="label">📦 <b>Destinataire</b><br>${g.map(esc).join("<br>")}</div>`,
+    rounds:[
+      {sit:"Prépare l'étiquette du colis pour Mme Julie Martin. Elle habite 8 rue des Fleurs, à Lyon. Le code postal est 69001.",
+       f:[["Ligne 1 : le nom",["Mme Julie Martin","Julie","Lyon"]],["Ligne 2 : le numéro et la rue",["8 rue des Fleurs","rue des Fleurs","Fleurs 8"]],["Ligne 3 : le code postal et la ville",["69001 Lyon","Lyon","6901 Lyon"]]]},
+      {sit:"Prépare l'étiquette du colis pour M. Karim Benali. Il habite 25 avenue de la Gare, à Marseille. Le code postal est 13001.",
+       f:[["Ligne 1 : le nom",["M. Karim Benali","Karim","Marseille"]],["Ligne 2 : le numéro et la rue",["25 avenue de la Gare","avenue de la Gare","La Gare 25"]],["Ligne 3 : le code postal et la ville",["13001 Marseille","Marseille 13","1301 Marseille"]]]}]});
+}
+const CMD=`<div class="ticket" style="max-width:560px;white-space:nowrap;display:inline-block"><b>🌐 COMMANDE N° 4582</b><br>Passée le 15/11/2026<br>Cliente : Mme Julie Martin<br><br>
+2 × 👕 Tee-shirt bleu, taille M .. 16,00 €<br>1 × 🧢 Casquette ............. 6,00 €<div class="tot">TOTAL : 22,00 €</div>
+Mode : retrait en magasin<br>Prête à partir du : 18/11/2026</div>`;
+function actEnLigne(){
+  const Q=[
+    ["Quel est le numéro de la commande ?",["4582","1511","2026"],""],
+    ["Combien de tee-shirts la cliente a-t-elle commandés ?",["2","1","16"],"« 2 × » veut dire 2 fois."],
+    ["Quelle taille pour les tee-shirts ?",["M","L","S"],""],
+    ["Combien coûte toute la commande ?",["22,00 €","16,00 €","6,00 €"],"16 € + 6 € = 22 €."],
+    ["Comment la cliente récupère sa commande ?",["Elle vient la chercher au magasin","Un livreur l'apporte chez elle","Par la poste"],"« Retrait en magasin »."],
+    ["À partir de quand la commande est prête ?",["Le 18 novembre 2026","Le 15 novembre 2026","Le 2 décembre 2026"],""],
+    ["Comment s'appelle la cliente ?",["Mme Julie Martin","Mme Casquette","M. Tee-shirt"],""],
+    ["Il n'y a plus de casquette dans le stock. Je :",["Préviens mon responsable","Mets un autre produit sans rien dire","Annule la commande tout seul"],""],
+  ].map(x=>({pre:CMD, q:x[0], opts:x[1], good:0, explain:x[2]}));
+  app.innerHTML=`<div class="panel">${actHeader("Lire une commande en ligne","🌐")}${consigne("Voici une commande passée sur le site internet du magasin. Lis-la bien pour répondre.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), Q, (s,d)=>finish("enligne",s,Q.length,d));
+}
+function actCarton(){
+  zoneGame({id:"carton", title:"Le bon carton", ico:"📦", cls:"lvl",
+    cons:"Pour envoyer un produit, on choisit un emballage à la bonne taille : pas trop grand, pour ne pas gaspiller, et pas trop petit, pour bien protéger. Clique sur le bon emballage.",
+    zones:[["✉️","Enveloppe matelassée"],["📦","Petit carton"],["📦","Moyen carton"],["🗃️","Grand carton"]],
+    pool:[["📱 Une coque de téléphone.",0,"Elle est petite et plate : une enveloppe suffit."],
+          ["🧦 Une paire de chaussettes.",0,"Petite, souple et légère."],
+          ["☕ Une tasse.",1,"Elle est fragile : un petit carton, avec du papier pour la protéger."],
+          ["⌚ Une montre.",1,"Petite mais fragile : un petit carton."],
+          ["👟 Une paire de baskets.",2,"Un carton moyen."],
+          ["📚 Trois livres.",2,"Lourds et carrés : un carton moyen."],
+          ["🧸 Une grosse peluche.",3,"Elle prend beaucoup de place."],
+          ["🖥️ Un écran d'ordinateur.",3,"Un grand carton, bien protégé."]]});
+}
+const TARIF=`<table class="plan"><thead><tr><th>Poids du colis</th><th>Prix de l'envoi</th></tr></thead><tbody>
+<tr><td>Jusqu'à 1 kg</td><td>5 €</td></tr><tr><td>Plus de 1 kg, jusqu'à 2 kg</td><td>7 €</td></tr><tr><td>Plus de 2 kg, jusqu'à 5 kg</td><td>10 €</td></tr></tbody></table>
+<p style="font-size:.9rem;margin-top:0">Tarif d'exemple, inventé pour le jeu.</p>`;
+function actPoids(){
+  const Q=[
+    ["Le colis pèse 0,800 kg. L'envoi coûte :",["5 €","7 €","10 €"],"0,800 kg, c'est moins de 1 kg."],
+    ["Le colis pèse 1,500 kg. L'envoi coûte :",["7 €","5 €","10 €"],"C'est plus de 1 kg mais moins de 2 kg."],
+    ["Le colis pèse 4 kg. L'envoi coûte :",["10 €","7 €","4 €"],""],
+    ["Dans le colis : un tee-shirt (0,200 kg) et des baskets (1 kg). Le colis pèse :",["1,200 kg","1 kg","3 kg"],"0,200 + 1 = 1,200 kg."],
+    ["Ce colis de 1,200 kg coûte :",["7 €","5 €","10 €"],"1,200 kg, c'est plus de 1 kg."],
+    ["Un livre de 0,500 kg et un autre de 0,500 kg. Le colis pèse :",["1 kg","0,500 kg","5 kg"],"La moitié + la moitié = 1 kg."],
+    ["Ce colis de 1 kg coûte :",["5 €","7 €","10 €"],"« Jusqu'à 1 kg » : 1 kg compte dans la première ligne."],
+    ["Le colis pèse 6 kg. Je regarde le tableau :",["Le prix n'y est pas : je demande à mon responsable","C'est 10 €","C'est 5 €"],"Le tableau s'arrête à 5 kg."],
+  ].map(x=>({pre:TARIF, q:x[0], opts:x[1], good:0, explain:x[2]}));
+  app.innerHTML=`<div class="panel">${actHeader("Le prix du colis","⚖️")}${consigne("Le prix d'un envoi dépend du poids du colis. Lis bien le tableau pour répondre.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), Q, (s,d)=>finish("poids",s,Q.length,d));
+}
+const REVS=`<div class="revs">
+<div class="rev"><span class="stars">★★★★★</span> <b>Sophie</b><br>« Personnel très souriant, j'ai trouvé tout ce que je voulais ! »</div>
+<div class="rev"><span class="stars">★★☆☆☆</span> <b>Marc</b><br>« Beaucoup d'attente à la caisse : une seule caisse était ouverte. »</div>
+<div class="rev"><span class="stars">★★★★☆</span> <b>Nadia</b><br>« Bon magasin, mais le rayon fruits était un peu vide. »</div></div>
+<p style="font-size:.9rem;margin-top:0">Avis d'exemple, inventés pour le jeu.</p>`;
+function actAvisClients(){
+  const Q=[
+    ["Quel client a donné le plus d'étoiles ?",["Sophie","Marc","Nadia"],"Sophie a donné 5 étoiles."],
+    ["Combien d'étoiles Marc a-t-il données ?",["2","5","4"],""],
+    ["Pourquoi Marc n'est-il pas content ?",["Il a attendu longtemps à la caisse","Le magasin était trop propre","Les prix étaient trop bas"],""],
+    ["Pour que Marc soit plus content, le magasin pourrait :",["Ouvrir une autre caisse quand il y a du monde","Fermer le magasin","Effacer son avis"],""],
+    ["Nadia dit que le rayon fruits était vide. L'équipier peut :",["Bien remplir le rayon fruits","Ne rien faire","Cacher les fruits"],""],
+    ["Qu'est-ce qui a plu à Sophie ?",["Le personnel souriant","Le parking","La musique"],""],
+    ["Un avis, c'est :",["Ce que le client pense du magasin","Le ticket de caisse","Le planning"],""],
+    ["Un client écrit un avis très méchant sur internet. L'équipier :",["Ne répond pas lui-même et en parle à son responsable","Écrit une réponse méchante","Cherche le client"],""],
+  ].map(x=>({pre:REVS, q:x[0], opts:x[1], good:0, explain:x[2]}));
+  app.innerHTML=`<div class="panel">${actHeader("Les avis des clients","⭐")}${consigne("Sur internet, les clients peuvent donner leur avis sur le magasin, avec des étoiles. Lis les avis pour répondre.")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), Q, (s,d)=>finish("avisclients",s,Q.length,d));
+}
+function actRetour(){
+  dialogue({id:"retour", title:"Le retour d'un produit", ico:"↩️", who:"🧑 Le client",
+    cons:"Un client rapporte un vêtement trop petit. Aide-le. Attention : un stagiaire ne décide pas seul d'un échange.",
+    steps:[
+      {c:"Bonjour, j'ai acheté ce pull pour mon fils, mais il est trop petit.", opts:["Bonjour monsieur. Vous voulez l'échanger contre une autre taille ?","C'est pas notre problème.","Il fallait mieux regarder."], ex:"Je reste aimable et je propose une solution."},
+      {c:"Oui, je voudrais la taille au-dessus.", opts:["Vous avez votre ticket de caisse, s'il vous plaît ?","Donnez-le, c'est bon.","Non, impossible."], ex:"Le ticket prouve l'achat. Les règles d'échange dépendent du magasin."},
+      {c:"Le voilà. Le pull n'a pas été porté, l'étiquette est encore dessus.", opts:["Merci. Je vais chercher la taille L, et mon responsable va valider l'échange.","Je fais l'échange tout seul, sans demander.","Je garde le pull et le ticket."], ex:"C'est le responsable qui valide."},
+      {n:"Tu reviens avec le pull en taille L.", opts:["Voici le pull en taille L. Vous voulez le vérifier ?","Tenez. (Je le jette sur le comptoir.)","Il n'y a plus de L, au revoir. (Sans avoir regardé.)"], ex:"Je donne le produit avec soin."},
+      {c:"Parfait, merci beaucoup !", opts:["Avec plaisir ! Bonne journée, monsieur.","Ouais.","(Je pars.)"], ex:"Je finis poliment."},
+    ]});
+}
+
+/* ================= ZONE 4 : ma fiche produit ================= */
+function webHTML(p,sm){ const k=p.p.indexOf(" ");
+  return `<div class="web ${sm?"sm":""}" style="--wc:${p.c}"><div class="wi">${p.b?`<span class="wb">${esc(p.b)}</span>`:""}${p.p.slice(0,k)}</div>
+    <div class="wt"><div class="wn">${esc(p.p.slice(k+1))}</div><div class="wst">${"★".repeat(p.n)}${"☆".repeat(5-p.n)}</div><div class="wp">${esc(p.px)}</div><div class="wd">${p.d.map(esc).join(" • ")}</div></div><div class="wbtn">🛒 Ajouter au panier</div></div>`; }
+function actProduit(){
+  const st=state.students[cur]; const p=Object.assign({p:"🎧 Casque audio",px:"19,99 €",c:"#DCEBEC",d:[],n:4,b:""}, st.produit||{});
+  const P=["🎧 Casque audio","👟 Baskets","🧸 Peluche","⚽ Ballon","🎒 Sac à dos","⌚ Montre","☕ Tasse","🕶️ Lunettes de soleil"];
+  const PX=["9,99 €","14,99 €","19,99 €","29,99 €","49,99 €"];
+  const C=["#DCEBEC","#D9F2E6","#FFF4C4","#FBDAD6","#E9DDF7","#FCE4EC"];
+  const D=["Très confortable","Idéal pour le sport","Parfait pour offrir","Résistant et léger","Plusieurs couleurs"];
+  const B=["","Nouveau","Promo","Meilleure vente","Produit local"];
+  const grp=(g,arr,lab)=>`<div class="row">${arr.map(x=>`<button class="chip" data-g="${g}" data-v="${esc(x)}">${lab?lab(x):x}</button>`).join("")}</div>`;
+  app.innerHTML=`<div class="panel">${actHeader("Ma fiche produit","🛒")}
+    ${consigne("Sur le site internet du magasin, chaque produit a sa fiche. Crée la tienne : choisis le produit, le prix, la couleur, une étiquette, la note des clients et 1 ou 2 phrases.")}
+    <div id="prev" style="margin-bottom:18px;display:flex;justify-content:center"></div>
+    <h3>Le produit</h3>${grp("p",P)}
+    <h3 style="margin-top:16px">Le prix</h3>${grp("px",PX)}
+    <h3 style="margin-top:16px">La couleur du fond</h3><div class="palette">${C.map(x=>`<button class="pcol" data-g="c" data-v="${x}" style="background:${x}" aria-label="couleur"></button>`).join("")}</div>
+    <h3 style="margin-top:16px">L'étiquette</h3>${grp("b",B,x=>x||"Aucune")}
+    <h3 style="margin-top:16px">La note des clients</h3>${grp("n",["1","2","3","4","5"],x=>"★".repeat(+x))}
+    <h3 style="margin-top:16px">La description (1 ou 2 phrases)</h3>${grp("d",D)}
+    <p><button class="btn yellow" id="sv">💾 J'enregistre ma fiche produit</button></p><div id="fb"></div></div>`;
+  const draw=()=>{ document.getElementById("prev").innerHTML=webHTML(p);
+    app.querySelectorAll("[data-g]").forEach(b=>{ const g=b.dataset.g, x=b.dataset.v; b.classList.toggle("sel", g==="d"? p.d.includes(x) : g==="n"? +x===p.n : p[g]===x); }); };
+  app.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{ const g=b.dataset.g, x=b.dataset.v;
+    if(g==="d"){ if(p.d.includes(x)) p.d=p.d.filter(y=>y!==x); else if(p.d.length<2){ p.d.push(x); speak(x); } else toast("Tu as déjà 2 phrases. Clique sur une phrase pour l'enlever."); }
+    else if(g==="n") p.n=+x;
+    else { p[g]=x; if(g==="p"||g==="px") speak(x); }
+    draw(); });
+  document.getElementById("sv").onclick=()=>{
+    if(!p.d.length){ document.getElementById("fb").innerHTML=`<div class="feedback bad">Choisis au moins 1 phrase de description 🙂</div>`; return; }
+    st.produit={...p}; finish("produit",1,1,[`${p.p} – ${p.px} – ${p.d.join(", ")}`],"Super fiche produit ! Elle est enregistrée.",`<div style="display:flex;justify-content:center;margin-top:18px">${webHTML(st.produit)}</div>`);
+  };
+  draw();
+}
+
+/* ================= ZONE 5 : le grand défi ================= */
+function actDefi(){
+  const POOL=[
+    ["La douchette, c'est :",["Un petit scanner que l'on tient à la main","Un outil pour se laver","Une caisse"],""],
+    ["Mon mot de passe :",["Je le garde secret","Je le dis à mes amis","Je l'écris sur l'écran"],""],
+    ["Un inconnu demande l'adresse d'une cliente. Je :",["Ne la donne pas","La donne","La crie"],""],
+    ["Je quitte l'ordinateur du magasin. Je :",["Ferme ma session","Laisse tout ouvert","Éteins la lumière"],""],
+    ["Pour retrouver une commande, je demande :",["Le numéro de commande","Le code de la carte","L'âge du client"],""],
+    ["Un courriel à mon tuteur commence par :",["Bonjour Monsieur…","Yo","Coucou"],""],
+    ["Dans un courriel, l'objet, c'est :",["Le sujet du message, en quelques mots","La signature","La date"],""],
+    ["L'adresse s'écrit :",["Nom, puis numéro et rue, puis code postal et ville","Ville, puis nom","Code postal seulement"],""],
+    ["En France, un code postal a :",["5 chiffres","3 chiffres","10 chiffres"],""],
+    ["Pour préparer un colis, d'abord je :",["Lis la commande","Ferme le carton","Colle l'étiquette"],""],
+    ["Une tasse fragile, je l'envoie :",["Dans un petit carton, bien protégée","Dans une enveloppe sans protection","Dans un grand carton vide"],""],
+    ["Tarif : jusqu'à 1 kg = 5 €. Un colis de 0,800 kg coûte :",["5 €","7 €","10 €"],""],
+    ["Un tee-shirt de 0,200 kg et des baskets de 1 kg. Le colis pèse :",["1,200 kg","1 kg","0,200 kg"],""],
+    ["« 2 × Tee-shirt » sur la commande veut dire :",["2 tee-shirts","Taille 2","2 euros"],""],
+    ["Un client a donné 2 étoiles sur 5. Il est :",["Pas très content","Très content","On ne sait pas"],""],
+    ["Un avis méchant sur internet. L'équipier :",["En parle à son responsable","Répond méchamment","Cherche le client"],""],
+    ["Le client rapporte un produit. Je demande :",["Le ticket de caisse","Sa carte bancaire","Son adresse"],""],
+    ["Qui valide un échange ?",["Le responsable","Le stagiaire tout seul","Le client"],""],
+    ["Le client donne 50 €. Il paie 22 €. Je rends :",["28 €","38 €","72 €"],"50 − 22 = 28"],
+    ["Le client donne 10 €. Il paie 8,10 €. Je rends :",["1,90 €","2,90 €","18,10 €"],"10 − 8,10 = 1,90"],
+  ];
+  const Q=pickN(POOL,15).map(x=>({q:x[0], opts:x[1], good:0, explain:x[2]}));
+  app.innerHTML=`<div class="panel">${actHeader("Le grand défi","🏆")}${consigne("C'est le grand défi du niveau 8 ! 15 questions sur tout ce que tu as appris. Bonne chance !")}<div id="qz"></div></div>`;
+  runQuiz(document.getElementById("qz"), Q, (s,d)=>finish("defi",s,Q.length,d));
+}
+
+/* ================= Diplôme ================= */
+function screenDiplome(){
+  const st=state.students[cur]; window.scrollTo(0,0);
+  app.innerHTML=`<div class="panel" style="text-align:center;border:10px double var(--teal)">
+    <div style="font-size:4rem">🎓</div><h2>Diplôme de l'équipier connecté – Niveau 8</h2><p>Bravo à</p>
+    <p style="font-family:var(--title);font-size:2.4rem;margin:0">${esc(st.name)}</p>
+    <p>qui a terminé les ${ACTS.length} activités du magasin.</p>
+    <p>Le ${new Date().toLocaleDateString("fr-FR")}</p><p><b>${esc(NOM_ENSEIGNANTE)}</b></p>
+    <p class="row noprint" style="justify-content:center"><button class="btn yellow" onclick="window.print()">🖨 Imprimer</button><button class="btn ghost" onclick="screenHome()">⬅ Retour au magasin</button></p></div>`;
+  burst(); speak("Bravo "+st.name+" ! Tu as ton diplôme d'équipier connecté, niveau 8.");
+}
+
+/* ================= ZONE 4 : coloriage ================= */
+const DRAWINGS = {
+  col_colis: { t:"Le point de retrait", svg:`
+    <rect data-r="mur" x="0" y="0" width="400" height="262"/>
+    <rect data-r="sol" x="0" y="262" width="400" height="58"/>
+    <rect data-r="enseigne" x="110" y="10" width="180" height="36" rx="8"/>
+    <text class="svgline" x="200" y="35" text-anchor="middle" font-family="Verdana" font-size="18" font-weight="bold">RETRAIT</text>
+    <rect data-r="colis1" x="34" y="76" width="50" height="34"/><rect data-r="colis2" x="92" y="84" width="40" height="26"/>
+    <rect data-r="colis3" x="140" y="70" width="60" height="40"/><rect data-r="colis4" x="208" y="88" width="38" height="22"/>
+    <rect data-r="colis5" x="34" y="128" width="70" height="42"/><rect data-r="colis6" x="112" y="140" width="44" height="30"/>
+    <rect data-r="colis7" x="164" y="134" width="80" height="36"/>
+    <rect data-r="colis8" x="34" y="196" width="90" height="44"/><rect data-r="colis9" x="132" y="210" width="50" height="30"/>
+    <rect data-r="colis10" x="190" y="200" width="56" height="40"/>
+    <text class="svgline" x="59" y="98" text-anchor="middle" font-family="Verdana" font-size="11">4582</text>
+    <text class="svgline" x="204" y="157" text-anchor="middle" font-family="Verdana" font-size="11">1207</text>
+    <text class="svgline" x="79" y="223" text-anchor="middle" font-family="Verdana" font-size="11">3390</text>
+    <rect data-r="montant1" x="20" y="60" width="8" height="190"/><rect data-r="montant2" x="252" y="60" width="8" height="190"/>
+    <rect data-r="planche1" x="20" y="110" width="240" height="8"/><rect data-r="planche2" x="20" y="170" width="240" height="8"/><rect data-r="planche3" x="20" y="240" width="240" height="8"/>
+    <rect data-r="comptoir" x="280" y="176" width="110" height="86"/>
+    <rect data-r="tablette" x="300" y="146" width="56" height="34" rx="4"/><rect data-r="ecrantab" x="305" y="150" width="46" height="26"/>` },
+  col_ordi: { t:"L'ordinateur du magasin", svg:`
+    <rect data-r="mur" x="0" y="0" width="400" height="250"/>
+    <rect data-r="table" x="0" y="250" width="400" height="70"/>
+    <rect data-r="pied" x="185" y="208" width="30" height="30"/>
+    <rect data-r="socle" x="140" y="236" width="120" height="14" rx="6"/>
+    <rect data-r="ecran" x="60" y="26" width="280" height="184" rx="10"/>
+    <rect data-r="page" x="74" y="40" width="252" height="156"/>
+    <rect data-r="bandeau" x="74" y="40" width="252" height="26"/>
+    <text class="svgline" x="160" y="58" text-anchor="middle" font-family="Verdana" font-size="12" font-weight="bold">MON MAGASIN</text>
+    <rect data-r="panier" x="292" y="46" width="24" height="14" rx="3"/>
+    ${[0,1,2].map(i=>{const x=86+i*79;return `<rect data-r="produit${i}" x="${x}" y="78" width="70" height="104" rx="6"/><circle data-r="image${i}" cx="${x+35}" cy="110" r="20"/><rect data-r="bouton${i}" x="${x+10}" y="156" width="50" height="16" rx="4"/>`}).join("")}
+    <rect data-r="clavier" x="90" y="262" width="190" height="36" rx="6"/>
+    <ellipse data-r="souris" cx="316" cy="282" rx="16" ry="22"/>
+    <rect data-r="tasse" x="352" y="256" width="28" height="32" rx="4"/>` }
+};
+function drawingSVG(id, fills){
+  const tmp=document.createElement("div");
+  tmp.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 320">${DRAWINGS[id].svg}</svg>`;
+  tmp.querySelectorAll("[data-r]").forEach(el=>{ el.setAttribute("fill",(fills||{})[el.dataset.r]||"#ffffff"); el.setAttribute("stroke","#222"); el.setAttribute("stroke-width","2.5"); });
+  return tmp.innerHTML;
+}
+function actColor(id){
+  const st=state.students[cur]; const fills = Object.assign({}, st.colors[id]||{});
+  const pal=[["#E5483B","rouge"],["#F28C28","orange"],["#FFD43B","jaune"],["#9BD770","vert clair"],["#1F8A4C","vert"],["#8FD3F4","bleu ciel"],["#3B7DD8","bleu"],["#7A4FB5","violet"],["#F4A6C6","rose"],["#8A5A3B","marron"],["#9AA5A8","gris"],["#222222","noir"],["#ffffff","blanc (gomme)"]];
+  let color=pal[0][0];
+  app.innerHTML = `<div class="panel">${actHeader("Coloriage : "+DRAWINGS[id].t, id==="col_shop"?"🏪":"🎨")}
+    ${consigne("Choisis une couleur, puis clique sur une partie du dessin pour la colorier. Ton coloriage est enregistré.")}
+    <div class="palette">${pal.map((p,i)=>`<button class="pcol ${i===0?"sel":""}" data-c="${p[0]}" data-say="${p[1]}" style="background:${p[0]}" aria-label="${p[1]}"></button>`).join("")}</div>
+    <div class="colorbox" id="cb">${drawingSVG(id,fills)}</div>
+    <p class="row" style="justify-content:center;margin-top:16px"><button class="btn yellow" id="fin">✅ J'ai fini mon coloriage</button><button class="btn ghost small" id="clr">🧽 Tout effacer</button></p></div>`;
+  const persist=()=>{ st.colors[id]=fills; save(false); };
+  app.querySelectorAll(".pcol").forEach(b=>b.addEventListener("click",()=>{ color=b.dataset.c; app.querySelectorAll(".pcol").forEach(x=>x.classList.toggle("sel",x===b)); }));
+  const bindSvg=()=>document.querySelectorAll("#cb [data-r]").forEach(el=>el.addEventListener("click",()=>{ el.setAttribute("fill",color); fills[el.dataset.r]=color; persist(); }));
+  bindSvg();
+  document.getElementById("clr").onclick=()=>{ if(!confirm("Tout effacer ?")) return; for(const k in fills) delete fills[k]; persist(); document.getElementById("cb").innerHTML=drawingSVG(id,fills); bindSvg(); };
+  document.getElementById("fin").onclick=()=>{ persist(); finish(id,1,1,[`${Object.keys(fills).length} zones coloriées`],"Magnifique coloriage ! Il est enregistré."); };
+}
+
+/* ================= Sortie : avis ================= */
+function actAvis(){
+  const st=state.students[cur]; const a = Object.assign({humeur:"",prefere:"",plait:"",appris:""}, st.avis||{});
+  const pick=(group,val)=>{ a[group]=val; app.querySelectorAll(`[data-g="${group}"]`).forEach(b=>b.classList.toggle("sel", b.dataset.v===val)); };
+  app.innerHTML = `<div class="panel">${actHeader("Mon avis","📝")}
+    ${consigne("Dis-nous ce que tu as pensé de ta découverte.")}
+    <h3>Comment je me sens ? ${sayBtn("Comment je me sens ?")}</h3>
+    <div class="smileys">${["😀","🙂","😐","🙁"].map(e=>`<button class="smiley" data-g="humeur" data-v="${e}">${e}</button>`).join("")}</div>
+    <h3 style="margin-top:20px">Mon jeu préféré ${sayBtn("Mon jeu préféré")}</h3>
+    <div class="row">${ACTS.filter(x=>x.id!=="avis").map(x=>`<button class="chip" data-g="prefere" data-v="${esc(x.lbl)}">${x.ico} ${x.lbl}</button>`).join("")}</div>
+    <h3 style="margin-top:20px">Ce métier me plaît ? ${sayBtn("Ce métier me plaît ?")}</h3>
+    <div class="row">${["👍 Oui","🤏 Un peu","👎 Non"].map(v=>`<button class="chip" data-g="plait" data-v="${v}">${v}</button>`).join("")}</div>
+    <h3 style="margin-top:20px"><label for="ap">Ce que j'ai appris (un mot ou une phrase)</label> ${sayBtn("Ce que j'ai appris. Tu peux écrire un mot ou une phrase.")}</h3>
+    <textarea id="ap">${esc(a.appris)}</textarea>
+    <p><button class="btn yellow" id="sv">💾 J'enregistre mon avis</button></p><div id="fb"></div></div>`;
+  app.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>pick(b.dataset.g,b.dataset.v));
+  ["humeur","prefere","plait"].forEach(g=>a[g]&&pick(g,a[g]));
+  document.getElementById("sv").onclick=()=>{
+    a.appris=document.getElementById("ap").value.trim();
+    if(!a.humeur||!a.prefere||!a.plait){ document.getElementById("fb").innerHTML=`<div class="feedback bad">Réponds aux 3 premières questions 🙂</div>`; return; }
+    a.date=new Date().toLocaleString("fr-FR"); st.avis=a; save(); burst();
+    app.innerHTML=`<div class="panel result"><h2>Merci ${esc(st.name)} ! 💛</h2><p>Ton avis est enregistré.</p><button class="btn yellow" onclick="screenHome()">🛒 Retour au magasin</button></div>`;
+  };
+}
+
+/* ================= Espace enseignante (calque, accessible à tout moment) ================= */
+let tSel=null;
+const TL=()=>document.getElementById("tlayer");
+function closeTeacher(){ TL().hidden=true; TL().innerHTML=""; document.body.classList.remove("tl"); }
+function openTeacher(){
+  const L=TL(); L.hidden=false; document.body.classList.add("tl");
+  L.innerHTML=`<div class="panel tch" style="max-width:520px"><h2>🔒 Espace enseignante</h2>
+    <p>Le travail de l'élève n'est pas interrompu.</p>
+    <p><label for="cd">Code d'accès</label><br><input type="password" id="cd" autocomplete="off"> <button class="btn" id="go">Entrer</button></p>
+    <div id="cfb"></div><button class="btn ghost small" onclick="closeTeacher()">✖ Fermer</button></div>`;
+  const go=()=>{ if(document.getElementById("cd").value===CODE_PAR_DEFAUT){ tSel=cur||tSel; renderTeacher(); } else document.getElementById("cfb").innerHTML=`<div class="feedback bad">Code incorrect.</div>`; };
+  document.getElementById("go").onclick=go; document.getElementById("cd").onkeydown=e=>{ if(e.key==="Enter") go(); };
+  document.getElementById("cd").focus();
+}
+function renderTeacher(){
+  state = Object.assign(state, load()); // relit la dernière sauvegarde
+  const S=state.students, ids=Object.keys(S);
+  if(!tSel||!S[tSel]) tSel=ids[0]||null;
+  const total=k=>ACTS.filter(a=>isDone(S[k],a)).length;
+  const enCours=k=>Object.keys(S[k].progress||{}).map(id=>ACTS.find(a=>a.id===id)?.lbl).filter(Boolean).join(", ")||"–";
+  const cell=(st,a)=>{
+    let out="";
+    const p=(st.progress||{})[a.id];
+    if(a.id==="avis"){ const v=st.avis; out = v?`${v.humeur} ${esc(v.plait)}<br><small>${esc(v.date)}</small>`:"–"; }
+    else if(a.id==="poste"){ const r=st.results[a.id]; out = st.poste ? `<b>${esc(st.poste)}</b>`+(r?`<br><small>${esc(r.date)}</small>`:"") : "–"; }
+    else if(a.id==="produit"){ const r=st.results[a.id]; out = st.produit ? webHTML(st.produit,true)+(r?`<br><small>${esc(r.date)}</small>`:"") : "–"; }
+    else if(a.z==="z4"){ const r=st.results[a.id]; out = (st.colors[a.id]?drawingSVG(a.id,st.colors[a.id]):"–") + (r?`<br><small>Terminé – ${esc(r.date)}</small>`:(st.colors[a.id]?"<br><small>En cours</small>":"")); }
+    else { const r=st.results[a.id];
+      if(!r) out="–";
+      else if(a.id==="badge") out=`${st.badge?st.badge.emoji:""} Créé<br><small>${esc(r.date)}</small>`;
+      else out=`<b>${r.score}/${r.max}</b> (meilleur : ${r.best})<br><small>${r.attempts} essai(s) terminé(s) – ${esc(r.date)}</small>
+        <details><summary>Détail du dernier essai</summary><ul>${r.details.map(d=>`<li>${esc(d)}</li>`).join("")}</ul></details>`; }
+    if(p && a.z!=="z4") out+=`<div class="live">⏳ En cours (${p.details.length} réponse(s)) – ${esc(p.date)}
+      <details><summary>Voir</summary><ul>${p.details.map(d=>`<li>${esc(d)}</li>`).join("")}</ul></details></div>`;
+    return out; };
+  const st = tSel ? S[tSel] : null;
+  TL().innerHTML=`<div class="panel tch">
+    <div class="row" style="justify-content:space-between"><h2>📋 Suivi des élèves</h2>
+      <div class="row noprint"><button class="btn small" onclick="renderTeacher()">🔄 Actualiser</button><button class="btn ghost small" onclick="closeTeacher()">✖ Fermer et revenir</button></div></div>
+    ${ids.length===0?`<p>Aucun élève n'a encore commencé.</p>`:`
+    <div class="tablebox"><table><thead><tr><th>Élève</th><th>Jeux terminés</th><th>En cours</th></tr></thead><tbody>
+      ${ids.map(k=>`<tr><td><button class="stu ${k===tSel?"sel":""}" onclick="tSel='${k}';renderTeacher()">${esc(S[k].name)}</button>${k===cur?" <small>(connecté)</small>":""}</td><td>${total(k)} / ${ACTS.length}</td><td>${esc(enCours(k))}</td></tr>`).join("")}
+    </tbody></table></div>
+    <h3 style="margin-top:22px">Détail : ${esc(st.name)}</h3>
+    <div class="tablebox"><table><thead><tr><th>Activité</th><th>Résultat</th></tr></thead><tbody>
+      ${ZONES.map(z=>`<tr class="z"><td colspan="2">${z.t}</td></tr>`+ACTS.filter(a=>a.z===z.id).map(a=>`<tr><td>${a.ico} ${a.lbl}</td><td>${cell(st,a)}</td></tr>`).join("")).join("")}
+      <tr><td>Jeu préféré</td><td>${esc(st.avis?.prefere||"–")}</td></tr>
+      <tr><td>Ce que j'ai appris</td><td>${esc(st.avis?.appris||"–")}</td></tr>
+    </tbody></table></div>`}
+    <div class="noprint">
+      <h3 style="margin-top:24px">Actions</h3>
+      <div class="row">
+        <button class="btn small" onclick="window.print()">🖨 Imprimer</button>
+        <button class="btn small" onclick="exportData()">⬇ Télécharger une sauvegarde</button>
+        ${st?`<button class="btn ghost small" onclick="resetStudent('${tSel}')">♻ Supprimer ${esc(st.name)}</button>`:""}
+      </div>
+      <p><button class="btn ghost small" onclick="speak('Test de la voix. Bonjour, bienvenue dans le magasin.')">🔊 Tester la voix de l'ordinateur</button></p>
+    </div></div>`;
+}
+function resetStudent(k){
+  if(!confirm("Supprimer tout le travail de "+state.students[k].name+" ? Cette action est définitive.")) return;
+  delete state.students[k]; save(); tSel=null;
+  if(k===cur){ closeTeacher(); screenLogin(); } else renderTeacher();
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="suivi-immersion-EPC-"+new Date().toISOString().slice(0,10)+".json"; a.click();
+}
+
+drawMute();
+screenLogin();
+</script>
+</body>
+</html>
